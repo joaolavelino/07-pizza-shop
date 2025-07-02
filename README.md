@@ -17,7 +17,7 @@ Following the **get started** section of their documentation, select the desired
 Replace everything in `src/index.css` with the following:
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 ```
 
 #### Edit tsconfig.json file
@@ -101,9 +101,8 @@ By installing the component, it will be loaded on the `components` folder
 2 - Import and load the button on the app.
 
 ```tsx
-import { Button } from "@/components/ui/button";
-
-<Button variant="outline">Button</Button>;
+import { Button } from '@/components/ui/button'
+;<Button variant="outline">Button</Button>
 ```
 
 3 - When using Link with NextJS or React Router Dom, pass the `asChild` property to the button and insert the `Link` component inside.
@@ -119,3 +118,45 @@ import { Button } from "@/components/ui/button";
 1. **PostCSS Language Support**: https://marketplace.visualstudio.com/items?itemName=csstools.postcss
 
 2. **Tailwind CSS IntelliSense**: https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss
+
+## Tailwind + Preetier
+
+The Automatic Class Sorting with Prettier plugin is the official class sorting tool from Tailwind to organize the class declaration in components according to their recommended class order guidelines.
+
+_Check their guidelines here: https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted_
+
+`npm install -D prettier prettier-plugin-tailwindcss`
+
+Then add the plugin to your Prettier configuration file `preetier.config.cjs` (create it if necessary):
+
+```js
+export default = {
+  plugins: ["prettier-plugin-tailwindcss"],
+};
+```
+
+## ESlint Plugin Simple Import Sort`
+
+https://github.com/lydell/eslint-plugin-simple-import-sort
+
+`npm install --save-dev eslint-plugin-simple-import-sort`
+`npm install eslint-plugin-import --save-dev`
+
+Both Plugins are used
+
+````js
+{
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": "latest"
+  },
+  "plugins": ["simple-import-sort", "import"],
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error"
+  }
+}```
+````
