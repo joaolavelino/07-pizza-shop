@@ -85,3 +85,37 @@ Run the shadcn init command to setup your project: `npx shadcn@latest init`
 
 You will be asked a few questions to configure components.json.
 `Which color would you like to use as base color? › Neutral`
+
+## Dark Mode Setup
+
+To enable Dark Mode on the application, just follow the instruction on Dark Mode Tab of the documentation.
+
+## Use components
+
+ShadCN doesn't bring all the components on the main instalation. So it's necessary to install every component, just like RadixUI.
+By installing the component, it will be loaded on the `components` folder
+
+### Example with the Button Component
+
+1 - Install the component `npx shadcn@latest add button`
+2 - Import and load the button on the app.
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button variant="outline">Button</Button>;
+```
+
+3 - When using Link with NextJS or React Router Dom, pass the `asChild` property to the button and insert the `Link` component inside.
+
+```tsx
+<Button asChild>
+  <Link href="/login">Login</Link>
+</Button>
+```
+
+## VSCODE Extensions
+
+1. **PostCSS Language Support**: https://marketplace.visualstudio.com/items?itemName=csstools.postcss
+
+2. **Tailwind CSS IntelliSense**: https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss
