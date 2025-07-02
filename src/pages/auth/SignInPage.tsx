@@ -1,6 +1,6 @@
-import type { DefaultPageTypes } from '@/_types/pagesTypes'
+import type { DefaultPageProps } from '@/_types/pagesTypes'
 
-export interface SignInPageProps extends DefaultPageTypes {}
+export interface SignInPageProps extends DefaultPageProps {}
 
 export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
   return (

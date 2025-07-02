@@ -1,3 +1,3 @@
-export interface DefaultPageTypes {
+export interface DefaultPageProps {
   title: string
 }
