@@ -5,11 +5,12 @@ import { Label } from '@/components/ui/label'
 import { HourglassIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export interface SignInPageProps extends DefaultPageProps {}
 
 const signInSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email('Insert a valid e-mail address.'),
 })
 
 type signInFormType = z.infer<typeof signInSchema>
@@ -19,7 +20,9 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<signInFormType>()
+  } = useForm<signInFormType>({
+    resolver: zodResolver(signInSchema),
+  })
 
   async function handleSignIn(data: signInFormType) {
     await new Promise((resolve) => setTimeout(resolve, 2000))
