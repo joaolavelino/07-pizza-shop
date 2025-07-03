@@ -34,14 +34,19 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
         toast.success('Login success', {
           description:
             'Check your e-mail for your personalized authentification link.',
+          action: {
+            label: 'Send again',
+            onClick: () => {
+              toast.success('Sent again')
+            },
+          },
         })
       } else {
         throw new Error('Email not registered.')
       }
     } catch (error) {
       toast.error('Login failed', {
-        description:
-          'Email address not registered. Create an account or try again.',
+        description: 'Invalid credentials.',
       })
       console.log(error)
     }
