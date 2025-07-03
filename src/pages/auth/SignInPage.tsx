@@ -2,10 +2,11 @@ import type { DefaultPageProps } from '@/_types/pagesTypes'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { HourglassIcon } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LucidePizza } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
 export interface SignInPageProps extends DefaultPageProps {}
 
@@ -25,7 +26,25 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
   })
 
   async function handleSignIn(data: signInFormType) {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      const randomNumber: number = await new Promise((resolve) =>
+        setTimeout(() => resolve(Math.floor(Math.random() * 100)), 2000),
+      )
+      if (randomNumber % 2 == 0) {
+        toast.success('Login success', {
+          description:
+            'Check your e-mail for your personalized authentification link.',
+        })
+      } else {
+        throw new Error('Email not registered.')
+      }
+    } catch (error) {
+      toast.error('Login failed', {
+        description:
+          'Email address not registered. Create an account or try again.',
+      })
+      console.log(error)
+    }
     console.log(data)
   }
   return (
@@ -52,7 +71,11 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
               <Input id="email" type="email" {...register('email')} />
             </div>
             <Button className="w-full" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? <HourglassIcon /> : 'Log-in'}
+              {isSubmitting ? (
+                <LucidePizza className="animate-spin" />
+              ) : (
+                'Log-in'
+              )}
             </Button>
           </form>
         </div>
