@@ -1,4 +1,3 @@
-import type { DefaultPageProps } from '@/_types/pagesTypes'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -7,17 +6,20 @@ import { LucidePizza } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
-import { z } from 'zod'
+import z from 'zod'
 
-export interface SignInPageProps extends DefaultPageProps {}
+export interface SignUpPageProps {}
 
 const signInSchema = z.object({
   email: z.string().email('Insert a valid e-mail address.'),
+  restaurantName: z.string(),
+  managerName: z.string(),
+  phoneNumber: z.string(),
 })
 
 type signInFormType = z.infer<typeof signInSchema>
 
-export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
+export const SignUpPage: React.FC<SignUpPageProps> = () => {
   const {
     register,
     handleSubmit,
@@ -55,18 +57,18 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
   }
   return (
     <>
-      <title>{title}</title>
+      <title>Sign-Up</title>
       <div className="bg-muted rounded-sm border-1 p-6">
         <Button asChild variant="outline" className="absolute top-10 right-10">
-          <Link to="/sign-up">Create an account</Link>
+          <Link to="/sign-in">Login</Link>
         </Button>
         <div className="flex w-[350px] flex-col justify-center gap-6">
           <div className="flex flex-col gap-2">
             <h1 className="text-2xl font-thin tracking-tight">
-              Access dashboard
+              Create a free account
             </h1>
             <p className="text-muted-foreground text-sm font-light">
-              Track your sales through the partner dashboard
+              Become a partner and start tracking your sales
             </p>
           </div>
 
@@ -76,8 +78,33 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
             onSubmit={handleSubmit(handleSignIn)}
           >
             <div className="space-y-2">
+              <Label htmlFor="restaurantName">Restaurant Name</Label>
+              <Input
+                id="restaurantName"
+                type="text"
+                {...register('restaurantName')}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" {...register('email')} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="managerName">Manager Name</Label>
+              <Input
+                id="managerName"
+                type="text"
+                {...register('managerName')}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input
+                id="phoneNumber"
+                type="phone"
+                {...register('phoneNumber')}
+              />
             </div>
             <Button className="w-full" type="submit" disabled={isSubmitting}>
               {isSubmitting ? (

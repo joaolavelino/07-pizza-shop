@@ -4,6 +4,7 @@ import { SignInPage } from './pages/auth/SignInPage'
 import { AppLayout } from './pages/_layout/AppLayout'
 import { AuthLayout } from './pages/_layout/AuthLayout'
 import { PageTitle } from './_util/pageTitle'
+import { SignUpPage } from './pages/auth/SignUpPage'
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
       {
         path: '/sign-in',
         element: <SignInPage title={PageTitle('Sign in')} />,
+      },
+      {
+        path: '/sign-up',
+        element: <SignUpPage />,
       },
     ],
   },
