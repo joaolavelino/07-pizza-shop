@@ -4,6 +4,7 @@ import { NavigationLink } from './NavLink'
 import { ThemeToggle } from './ThemeToggle'
 import { Separator } from './ui/separator'
 import { AccountMenu } from './AccountMenu'
+import { MobileNav } from './MobileNav'
 
 export const Header: React.FC = () => {
   return (
@@ -13,7 +14,7 @@ export const Header: React.FC = () => {
           <Pizza strokeWidth={1} size={24} /> pizza.shop
         </h1>
         <Separator orientation="vertical" />
-        <nav className="text-muted-foreground flex items-center space-x-4 lg:space-x-6">
+        <nav className="text-muted-foreground hidden items-center space-x-4 md:flex lg:space-x-6">
           {NAV_LINKS.map((link) => (
             <NavigationLink key={link.name} to={link.url}>
               <link.icon />
@@ -24,8 +25,13 @@ export const Header: React.FC = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        <ThemeToggle />
-        <AccountMenu />
+        <div className="hidden md:flex">
+          <ThemeToggle />
+          <AccountMenu />
+        </div>
+        <div className="flex md:hidden">
+          <MobileNav />
+        </div>
       </div>
     </header>
   )

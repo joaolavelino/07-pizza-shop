@@ -1,4 +1,4 @@
-import { Home, UtensilsCrossed } from 'lucide-react'
+import { Building, Home, LogOut, UtensilsCrossed } from 'lucide-react'
 
 export const PAGE_TITLE = 'Pizza Shop'
 
@@ -20,4 +20,9 @@ export const bgPictures = {
 export const NAV_LINKS = [
   { url: '/', name: 'Home', icon: Home },
   { url: '/orders', name: 'Orders', icon: UtensilsCrossed },
+]
+
+export const ACCOUNT_MENU_LINKS = [
+  { url: '/', name: 'Shop Profile', icon: Building },
+  { url: '/', name: 'Log-out', icon: LogOut },
 ]

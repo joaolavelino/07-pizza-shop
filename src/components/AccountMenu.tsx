@@ -1,4 +1,5 @@
-import { Building, ChevronDown, LogOut } from 'lucide-react'
+import { ACCOUNT_MENU_LINKS } from '@/_constants/constants'
+import { ChevronDown } from 'lucide-react'
 import { Button } from './ui/button'
 import {
   DropdownMenu,
@@ -21,22 +22,38 @@ export const AccountMenu: React.FC = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="flex flex-col">
-          <span>João Avelino</span>
-          <span className="text-muted-foreground text-sm font-normal">
-            joaolavelino@gmail.com
-          </span>
-        </DropdownMenuLabel>
+        <AccountMenuLabel />
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Building className="mr-2" />
-          <span>Shop Profile</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="text-rose-500 dark:text-rose-400">
-          <LogOut className="light:text-rose-500 mr-2 dark:text-rose-400" />
-          <span>Log-out</span>
-        </DropdownMenuItem>
+        <AccountMenuContent />
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export const AccountMenuContent: React.FC = () => {
+  const logoutColours = 'text-rose-500 dark:text-rose-400'
+  return (
+    <>
+      {ACCOUNT_MENU_LINKS.map((link) => (
+        <DropdownMenuItem
+          className={link.name == 'Log-out' ? logoutColours : ''}
+          key={link.name}
+        >
+          <link.icon className={link.name == 'Log-out' ? logoutColours : ''} />
+          <span>{link.name}</span>
+        </DropdownMenuItem>
+      ))}
+    </>
+  )
+}
+
+export const AccountMenuLabel: React.FC = () => {
+  return (
+    <DropdownMenuLabel className="flex flex-col">
+      <span>João Avelino</span>
+      <span className="text-muted-foreground text-sm font-normal">
+        joaolavelino@gmail.com
+      </span>
+    </DropdownMenuLabel>
   )
 }
