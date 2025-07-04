@@ -5,6 +5,7 @@ import { AppLayout } from './pages/_layout/AppLayout'
 import { AuthLayout } from './pages/_layout/AuthLayout'
 import { PageTitle } from './_util/pageTitle'
 import { SignUpPage } from './pages/auth/SignUpPage'
+import { OrdersPage } from './pages/app/OrdersPage'
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { path: '/', element: <DashboardPage title={PageTitle('Dashboard')} /> },
+      { path: '/orders', element: <OrdersPage /> },
     ],
   },
   {

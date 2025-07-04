@@ -1,3 +1,5 @@
+import { Home, UtensilsCrossed } from 'lucide-react'
+
 export const PAGE_TITLE = 'Pizza Shop'
 
 export const bgPictures = {
@@ -14,3 +16,8 @@ export const bgPictures = {
     creator: 'Rene Strgar',
   },
 }
+
+export const NAV_LINKS = [
+  { url: '/', name: 'Home', icon: Home },
+  { url: '/orders', name: 'Orders', icon: UtensilsCrossed },
+]

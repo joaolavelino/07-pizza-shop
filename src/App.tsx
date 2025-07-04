@@ -5,7 +5,7 @@ import { Toaster } from 'sonner'
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="pizza-shop-ui-theme">
       <RouterProvider router={router} />
       <Toaster closeButton richColors />
     </ThemeProvider>

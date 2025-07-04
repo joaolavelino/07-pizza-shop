@@ -19,7 +19,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = () => {
   }, [theme])
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-screen antialiased lg:grid-cols-2">
       <div
         className={`border-r-2-foreground text-muted-foreground flex h-full flex-col justify-between ${picture?.url} bg-cover bg-center`}
       >
