@@ -80,7 +80,7 @@ export const PopularProductsChart: React.FC<PopularProductsChartProps> = () => {
             {data.map((item, i) => (
               <TableRow
                 key={`popular-line-${i}`}
-                className={`${i == 0 ? 'text-rose-500' : 'text-foreground'}`}
+                className={`${i == 0 ? 'font-semibold text-rose-500' : 'text-foreground'}`}
               >
                 <TableCell>{item.name}</TableCell>
                 <TableCell className="text-right">{item.orders}</TableCell>
