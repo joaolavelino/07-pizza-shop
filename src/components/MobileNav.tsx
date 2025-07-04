@@ -22,6 +22,7 @@ export const MobileNav: React.FC = () => {
           className="flex h-10 gap-2 rounded-4xl select-none"
         >
           <MenuIcon />
+          <span className="sr-only">Menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
