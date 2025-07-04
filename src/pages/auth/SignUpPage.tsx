@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LucidePizza } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import z from 'zod'
 
@@ -28,19 +28,20 @@ export const SignUpPage: React.FC<SignUpPageProps> = () => {
     resolver: zodResolver(signInSchema),
   })
 
+  const navigate = useNavigate()
+
   async function handleSignIn(data: signInFormType) {
     try {
       const randomNumber: number = await new Promise((resolve) =>
         setTimeout(() => resolve(Math.floor(Math.random() * 100)), 2000),
       )
       if (randomNumber % 2 == 0) {
-        toast.success('Login success', {
-          description:
-            'Check your e-mail for your personalized authentification link.',
+        toast.success('Register success', {
+          description: 'Your shop is successfully registered',
           action: {
-            label: 'Send again',
+            label: 'Login',
             onClick: () => {
-              toast.success('Sent again')
+              navigate('/sign-in')
             },
           },
         })
@@ -48,8 +49,8 @@ export const SignUpPage: React.FC<SignUpPageProps> = () => {
         throw new Error('Email not registered.')
       }
     } catch (error) {
-      toast.error('Login failed', {
-        description: 'Invalid credentials.',
+      toast.error('Register failed', {
+        description: 'Erron on registering new user.',
       })
       console.log(error)
     }
@@ -110,9 +111,19 @@ export const SignUpPage: React.FC<SignUpPageProps> = () => {
               {isSubmitting ? (
                 <LucidePizza className="animate-spin" />
               ) : (
-                'Log-in'
+                'Create your account'
               )}
             </Button>
+            <p className="text-muted-foreground px-6 text-center text-xs leading-relaxed">
+              By creating your account, you accept our{' '}
+              <a href="#" className="underline underline-offset-2">
+                Terms of Service
+              </a>{' '}
+              and{' '}
+              <a href="#" className="text- underline underline-offset-2">
+                Privacy Settings
+              </a>
+            </p>
           </form>
         </div>
       </div>
