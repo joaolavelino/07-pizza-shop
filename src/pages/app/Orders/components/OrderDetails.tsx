@@ -1,13 +1,17 @@
-import { DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import {
+  TableRow,
   Table,
   TableBody,
   TableCell,
   TableFooter,
   TableHead,
   TableHeader,
-  TableRow,
-} from './ui/table'
+} from '@/components/ui/table'
+import {
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 export interface OrderDetailsProps {}
 
