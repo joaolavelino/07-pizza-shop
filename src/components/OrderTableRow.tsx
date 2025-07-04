@@ -1,6 +1,8 @@
 import { Check, Search, X } from 'lucide-react'
 import { Button } from './ui/button'
 import { TableCell, TableRow } from './ui/table'
+import { OrderDetails } from './OrderDetails'
+import { Dialog, DialogTrigger } from './ui/dialog'
 
 export interface OrderTableRowProps {}
 
@@ -8,10 +10,15 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = () => {
   return (
     <TableRow>
       <TableCell>
-        <Button variant="outline" size="icon">
-          <Search />
-          <span className="sr-only">Order Details</span>
-        </Button>
+        <Dialog>
+          <DialogTrigger>
+            <Button variant="outline" size="icon">
+              <Search />
+              <span className="sr-only">Order Details</span>
+            </Button>
+          </DialogTrigger>
+          <OrderDetails />
+        </Dialog>
       </TableCell>
       <TableCell className="font-mono text-xs font-medium">1234556</TableCell>
       <TableCell className="text-muted-foreground">5 minutes ago</TableCell>
