@@ -21,8 +21,8 @@ export const OrderTableFilter: React.FC<OrderTableFilterProps> = () => {
 
         <div className="flex gap-2">
           <Select>
-            <SelectTrigger className="flex-1 md:w-[180px]">
-              <SelectValue className="h-5 w-12" defaultValue={'all'} />
+            <SelectTrigger className="flex-1 md:w-[140px]">
+              <SelectValue className="" defaultValue={'all'} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>

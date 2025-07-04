@@ -24,16 +24,16 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = () => {
       <TableCell className="font-semibold">Richard Henshall</TableCell>
       <TableCell className="font-semibold">€ 38,90</TableCell>
       <TableCell className="font-semibold">
-        <Button variant={'outline'} size="sm">
-          <Check />
+        <Button variant={'secondary'} size="sm">
+          <Check className="text-green-600" />
           <span className="sr-only text-xs font-semibold lg:not-sr-only">
             Approve
           </span>
         </Button>
       </TableCell>
       <TableCell className="font-semibold">
-        <Button variant={'destructive'} size="sm">
-          <X />
+        <Button variant={'outline'} size="sm" className="">
+          <X className="text-rose-500" />
           <span className="sr-only text-xs font-semibold lg:not-sr-only">
             Cancel
           </span>

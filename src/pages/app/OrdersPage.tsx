@@ -1,5 +1,6 @@
 import { OrderTableFilter } from '@/components/OrderTableFilter'
 import { OrderTableRow } from '@/components/OrderTableRow'
+import { Pagination } from '@/components/Pagination'
 import { Table, TableBody, TableHead, TableHeader } from '@/components/ui/table'
 
 export const OrdersPage: React.FC = () => {
@@ -23,9 +24,12 @@ export const OrdersPage: React.FC = () => {
               <TableHead className="w-12 lg:w-25"></TableHead>
             </TableHeader>
             <TableBody>
-              <OrderTableRow />
+              {Array.from({ length: 10 }).map((_, i) => (
+                <OrderTableRow key={i} />
+              ))}
             </TableBody>
           </Table>
+          <Pagination entriesNumber={45} perPage={5} pageIndex={1} />
         </div>
       </div>
     </>

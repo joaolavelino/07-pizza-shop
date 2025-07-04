@@ -25,7 +25,7 @@ export const Header: React.FC = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden md:flex">
+        <div className="hidden gap-2 md:flex">
           <ThemeToggle />
           <AccountMenu />
         </div>
