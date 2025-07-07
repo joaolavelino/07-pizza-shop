@@ -12,7 +12,7 @@ export const DayOrdersAmountCard: React.FC<DayOrdersAmountCardProps> = () => {
       <CardContent className="space-y-1">
         <span className="text-2xl font-bold tracking-tight">7</span>
         <p className="text-muted-foreground text-sm">
-          <span className="text-rose-500">-1,7%</span> over last month
+          <span className="text-rose-500">-1,7%</span> over yeasterday
         </p>
       </CardContent>
     </Card>
