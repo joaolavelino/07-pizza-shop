@@ -32,7 +32,7 @@ export const data = [
 
 export const PopularProductsChart: React.FC<PopularProductsChartProps> = () => {
   return (
-    <Card className="col-span-3">
+    <Card className="w-full lg:col-span-3">
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
         <div>
           <Star className="text-rose-500" size={32} />

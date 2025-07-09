@@ -17,8 +17,8 @@ export const OrdersPage: React.FC = () => {
                 <TableHead className="w-12"></TableHead>
                 <TableHead className="w-25">Id#</TableHead>
                 <TableHead className="w-30">Ordered at</TableHead>
-                <TableHead className="w-30">Status</TableHead>
-                <TableHead>Customer</TableHead>
+                <TableHead className="w-15 md:w-30">Status</TableHead>
+                <TableHead className="hidden lg:flex">Customer</TableHead>
                 <TableHead className="w-30">Order Total</TableHead>
                 <TableHead className="w-12 lg:w-25"></TableHead>
                 <TableHead className="w-12 lg:w-25"></TableHead>

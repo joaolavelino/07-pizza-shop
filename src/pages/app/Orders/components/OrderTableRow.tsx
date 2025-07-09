@@ -21,14 +21,18 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = () => {
         </Dialog>
       </TableCell>
       <TableCell className="font-mono text-xs font-medium">1234556</TableCell>
-      <TableCell className="text-muted-foreground">5 minutes ago</TableCell>
+      <TableCell className="text-muted-foreground">5 min ago</TableCell>
       <TableCell>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2 md:justify-start">
           <span className="h-2 w-2 rounded-full bg-slate-400"></span>
-          <span className="text-muted-foreground font-medium">Pending</span>
+          <span className="text-muted-foreground hidden font-medium md:block">
+            Pending
+          </span>
         </div>
       </TableCell>
-      <TableCell className="font-semibold">Richard Henshall</TableCell>
+      <TableCell className="hidden font-semibold lg:flex">
+        Richard Henshall
+      </TableCell>
       <TableCell className="font-semibold">€ 38,90</TableCell>
       <TableCell className="font-semibold">
         <Button variant={'secondary'} size="sm">

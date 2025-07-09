@@ -1,3 +1,4 @@
+import { formatCurrency } from '@/_util/format'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DollarSign } from 'lucide-react'
 
@@ -11,7 +12,9 @@ export const MonthRevenueCard: React.FC<MonthRevenueCardProps> = () => {
         <DollarSign size={20} className="text-rose-500" />
       </CardHeader>
       <CardContent className="space-y-1">
-        <span className="text-2xl font-bold tracking-tight">28403.03</span>
+        <span className="text-2xl font-bold tracking-tight">
+          {formatCurrency(13423)}
+        </span>
         <p className="text-muted-foreground text-sm">
           <span className="text-emerald-500">+2%</span> over last month
         </p>

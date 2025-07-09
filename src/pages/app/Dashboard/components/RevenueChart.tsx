@@ -55,7 +55,7 @@ const data = [
 
 export const RevenueChart: React.FC<RevenueChartProps> = () => {
   return (
-    <Card className="col-span-6">
+    <Card className="lg:col-span-6">
       <CardHeader className="flex flex-row items-center gap-4 pb-8">
         <div>
           <ChartSpline className="text-rose-500" size={32} />
@@ -66,7 +66,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={300}>
           <LineChart style={{ fontSize: 12 }} data={data}>
             <XAxis dataKey={'date'} />
             <YAxis tickFormatter={(value: number) => formatCurrency(value)} />

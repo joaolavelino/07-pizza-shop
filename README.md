@@ -160,3 +160,67 @@ Both Plugins are used
   }
 }```
 ````
+
+## API SETUP WITH DOCKER
+
+### Clone the repository
+
+`git clone https://github.com/rocketseat-education/pizzashop-api`
+
+### Install Bun
+
+I had a bit of a problem to install bun. After installing it with `curl -fsSL https://bun.sh/install | bash`, I had to run the following commands (provided by DeepSeek):
+
+```ts
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+```
+
+After this I could run the bun commands, like `bun --version`.
+
+### Install Docker
+
+http://docker.com/get-started/
+
+### Run the container:
+
+Inside of the project, on VSCode, run the following on the terminal:
+`docker compose up -d`
+**-d** means that the container will run **D**etatched from the terminal, on Docker Desktop
+
+You can confirm that the conainer is up and running using the following command:
+`docker ps`
+
+With the container already up and running, install all the packages with `bun-i` I created all the database tables with , `bun migrate`, `bun seed`
+
+# API Connection using Axios
+
+## Create the axios API connection:
+
+```ts
+import axios from 'axios'
+
+export const api = axios.create({
+  baseURL: 'http://localhost:3000',
+})
+```
+
+### Enviroment Variables:
+
+When the project is deployed, the API base URL will change into the actual hosted address. So, in order to set everything up correctly, we're going to set some environment variables (.env).
+
+Starting with a `.env.local` file on the root of the project that will handle these variables:
+
+```ts
+VITE_API_URL = 'http://localhost:3000'
+```
+
+And update the `baseURL` on the `axios.ts` file:
+
+```ts
+import axios from 'axios'
+
+export const api = axios.create({
+  baseURL: import.meta.env.BASE_URL,
+})
+```
