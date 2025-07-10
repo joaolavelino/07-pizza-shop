@@ -254,6 +254,18 @@ export const api = axios.create({
 
 # Tanstack React Query
 
+## **TanStack Query (React Query)**
+
+A powerful async state management library for React that **simplifies data fetching, caching, and synchronization**. It handles:
+
+✅ **Auto-caching & deduping**  
+✅ **Background refetching**  
+✅ **Optimistic updates**  
+✅ **Pagination/Infinite Queries**  
+✅ **Suspense/Error Boundaries**
+
+Works with REST, GraphQL, or any async data source. [Learn more](https://tanstack.com/query).
+
 ## 1 - Create a Query Client
 
 On a `lib/query.ts` file, create the `queryClient`:
