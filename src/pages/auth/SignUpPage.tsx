@@ -1,7 +1,9 @@
+import { registerRestaurant } from '@/api/register-restaurant'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { LucidePizza } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
@@ -30,31 +32,33 @@ export const SignUpPage: React.FC<SignUpPageProps> = () => {
 
   const navigate = useNavigate()
 
-  async function handleSignIn(data: signInFormType) {
-    try {
-      const randomNumber: number = await new Promise((resolve) =>
-        setTimeout(() => resolve(Math.floor(Math.random() * 100)), 2000),
-      )
-      if (randomNumber % 2 == 0) {
-        toast.success('Register success', {
-          description: 'Your shop is successfully registered',
-          action: {
-            label: 'Login',
-            onClick: () => {
-              navigate('/sign-in')
-            },
+  const { mutateAsync: registerRestaurantFn } = useMutation({
+    mutationFn: registerRestaurant,
+    onSuccess: (_, variables) => {
+      toast.success('Register success', {
+        description: 'Your shop is successfully registered',
+        action: {
+          label: 'Login',
+          onClick: () => {
+            navigate(`/sign-in?email=${variables.email}`)
           },
-        })
-      } else {
-        throw new Error('Email not registered.')
-      }
-    } catch (error) {
-      toast.error('Register failed', {
-        description: 'Erron on registering new user.',
+        },
       })
-      console.log(error)
-    }
-    console.log(data)
+    },
+    onError: (error) => {
+      toast.error('Register failed', {
+        description: error.message,
+      })
+    },
+  })
+
+  async function handleSignIn(data: signInFormType) {
+    await registerRestaurantFn({
+      restaurantName: data.restaurantName,
+      email: data.email,
+      managerName: data.managerName,
+      phone: data.phoneNumber,
+    })
   }
   return (
     <>

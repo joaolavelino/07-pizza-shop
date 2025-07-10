@@ -442,3 +442,46 @@ async function handleSignIn(data: signInFormType) {
   authenticate({ email: data.email })
 }
 ```
+
+On a second example, on the register restaurant form, I wanted to redirect the user to the login page, but I wanted to pre-fill the form with the e-mail he just registered.
+To do so, I used the `variables` passed to the mutationFn. They are accessible on the `onSuccess` using the secont argument of the arrow function. The first argument is the data provided by the response. Since this request doesn't gerenrate a response, I left it as `_`:
+
+```ts
+const { mutateAsync: registerRestaurantFn } = useMutation({
+  mutationFn: registerRestaurant,
+  onSuccess: (_, variables) => {
+    toast.success('Register success', {
+      description: 'Your shop is successfully registered',
+      action: {
+        label: 'Login',
+        onClick: () => {
+          navigate(`/sign-in?email=${variables.email}`)
+        },
+      },
+    })
+  },
+  onError: (error) => {
+    toast.error('Register failed', {
+      description: error.message,
+    })
+  },
+})
+```
+
+_This is more of a react-router-dom thing, but ok_
+To access this search params from the URL, you can use the `useSearchParams()` hook from `react-router-dom` and pass it as the form's default values on the `useForm()` hook.
+
+```tsx
+const [searchParams] = useSearchParams()
+
+const {
+  register,
+  handleSubmit,
+  formState: { isSubmitting },
+} = useForm<signInFormType>({
+  resolver: zodResolver(signInSchema),
+  defaultValues: {
+    email: searchParams.get('email') ?? '',
+  },
+})
+```
