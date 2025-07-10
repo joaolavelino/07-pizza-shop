@@ -522,4 +522,54 @@ The `useQuery()`hook recieves as a parameter an object with two main items:
 - `queryFn`: is the function that makes the API request
   The hook returns a response, that can be destructured. This response contains the **data**, and different request states (`isError`, `isFetching`, `isLoading`, etc), errors, and more.
 
-We can pass different outcomes for the request with `onSuccess`, `onError`, etc.
+We can pass different outcomes for the request with `onSuccess`, `onError`, etc, but it's only used when the response needs to be passed on a callback function (i.e.: the setData on a form)
+
+```tsx
+export const AccountMenuLabel: React.FC = () => {
+  const { data: userProfile } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: getProfile,
+  })
+  return (
+    <DropdownMenuLabel className="flex flex-col">
+      <span>{userProfile?.name}</span>
+      <span className="text-muted-foreground text-sm font-normal">
+        {userProfile?.email}
+      </span>
+    </DropdownMenuLabel>
+  )
+}
+```
+
+### QUICK NOTES ON CALLBACKS ON THE REACT-QUERY HOOKS
+
+#### `useQuery` (GET Requests)
+
+##### 🚫 Avoid:
+
+- Using onSuccess/onError for UI state changes
+- Navigation inside callbacks
+
+#### `useMutation` (POST/PUT/DELETE Requests)
+
+##### 💡 Use Callbacks For:
+
+- Analytics logging
+- Syncing to localStorage
+- Non-visual side effects
+
+#### Rule of thumb:
+
+Feature useQuery useMutation
+Callbacks needed ❌ Rarely ✅ Always
+UI updates In render In callbacks
+Side effects Minimal Essential
+[//]: # "Pro tip: Keep mutations self-contained"
+
+| Feature          | `useQuery` | `useMutation` |
+| ---------------- | ---------- | ------------- |
+| Callbacks needed | ❌ Rarely  | ✅ Always     |
+| UI updates       | In render  | In callbacks  |
+| Side effects     | Minimal    | Essential     |
+
+[//]: # 'Pro tip: Keep mutations self-contained'
