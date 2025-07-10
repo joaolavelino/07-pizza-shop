@@ -560,12 +560,6 @@ export const AccountMenuLabel: React.FC = () => {
 
 #### Rule of thumb:
 
-Feature useQuery useMutation
-Callbacks needed ❌ Rarely ✅ Always
-UI updates In render In callbacks
-Side effects Minimal Essential
-[//]: # "Pro tip: Keep mutations self-contained"
-
 | Feature          | `useQuery` | `useMutation` |
 | ---------------- | ---------- | ------------- |
 | Callbacks needed | ❌ Rarely  | ✅ Always     |
