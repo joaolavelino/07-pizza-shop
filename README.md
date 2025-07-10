@@ -249,6 +249,7 @@ import axios from 'axios'
 
 export const api = axios.create({
   baseURL: env.VITE_API_URL,
+  withCredentials: true, //this allows axios to read the credentials for the request (the cookie with the token )
 })
 ```
 
@@ -346,7 +347,7 @@ function App() {
 }
 ```
 
-## Creating my first request - Sign-In:
+## Creating a POST request with useMutation() - Sign-In:
 
 In order to keep all the API request funcions organized, create a `/src/api` folder.
 
@@ -485,3 +486,40 @@ const {
   },
 })
 ```
+
+## Creating a GET request with useQuery() - Get Profile
+
+To make a get profile, on the `api` folder, create a request with the `api` object created with Axios.
+Here we can set a Typescript interface to create the typing for the expected API response:
+
+```ts
+import { api } from '@/lib/axios'
+
+export interface getProfileResponse {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  role: 'manager' | 'customer'
+  createdAt: Date | null
+  updatedAt: Date | null
+}
+
+export async function getProfile() {
+  const response = await api.get<getProfileResponse>('/me')
+  return response.data
+}
+```
+
+### On the component:
+
+On the `AccountMenu`, instead of the `useMutation()` hook, we use the `useQuery()`.
+This time we're fetching data, and `useQuery` provides us different functionalities.
+
+The `useQuery()`hook recieves as a parameter an object with two main items:
+
+- `queryKey`: provides a key, so reactQuery knows if this information is already cached, so it prevents duplication
+- `queryFn`: is the function that makes the API request
+  The hook returns a response, that can be destructured. This response contains the **data**, and different request states (`isError`, `isFetching`, `isLoading`, etc), errors, and more.
+
+We can pass different outcomes for the request with `onSuccess`, `onError`, etc.
