@@ -215,6 +215,8 @@ Starting with a `.env.local` file on the root of the project that will handle th
 VITE_API_URL = 'http://localhost:3000'
 ```
 
+\_Because we're working on Vite, all the environment variables have to start with VITE\_\_
+
 And update the `baseURL` on the `axios.ts` file:
 
 ```ts
@@ -223,4 +225,59 @@ import axios from 'axios'
 export const api = axios.create({
   baseURL: import.meta.env.BASE_URL,
 })
+```
+
+We can also create a validation for our environment variable using Zod.
+On an `env.ts` file, create a validation schema for the variable:
+
+```ts
+import { z } from 'zod'
+
+const envSchema = z.object({
+  VITE_API_URL: z.string().url(),
+})
+
+export const env = envSchema.parse(import.meta.env)
+//Export the validated env - if the validation fails, it will trigger an error and prevent the app from running
+```
+
+Then import the `env` as the baseURL on the `axios.ts` config file
+
+```ts
+import { env } from '@/env'
+import axios from 'axios'
+
+export const api = axios.create({
+  baseURL: env.VITE_API_URL,
+})
+```
+
+# Tanstack React Query
+
+## 1 - Create a Query Client
+
+On a `lib/query.ts` file, create the `queryClient`:
+
+```ts
+import { QueryClient } from '@tanstack/react-query'
+
+export const queryClient = new QueryClient()
+```
+
+And use a context provider, called `QueryClientProvider` around the `RouterProvider`, on the `App.tsx` component.
+
+```tsx
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from './lib/reactQuery'
+
+function App() {
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="pizza-shop-ui-theme">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster closeButton richColors />
+      </QueryClientProvider>
+    </ThemeProvider>
+  )
+}
 ```
