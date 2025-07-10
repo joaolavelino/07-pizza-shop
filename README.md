@@ -266,6 +266,58 @@ A powerful async state management library for React that **simplifies data fetch
 
 Works with REST, GraphQL, or any async data source. [Learn more](https://tanstack.com/query).
 
+## Differentiate MUTATION and QUERY
+
+### Query (`useQuery()`)
+
+**Purpose**: Fetch data (GET requests)
+**Characteristics**:
+✅ Read-only operations
+✅ Automatic re-fetching (when data becomes stale)
+✅ Cached (shared across components)
+✅ Background updates
+✅ Deduplicated (same key = single request)
+
+```tsx
+const { data } = useQuery({
+  queryKey: ['todos'],
+  queryFn: fetchTodos, // GET /todos
+})
+```
+
+#### Use Cases:
+
+- Loading blog posts
+- Fetching user profiles
+- Getting paginated data
+
+### Mutation (`useMutation()`)
+
+**Purpose**: Modify data (POST/PUT/DELETE)
+**Characteristics**:
+🔥 Triggers side effects (changes server state)
+🔄 Manual execution (call mutate() to run)
+🛠️ No caching (but can invalidate queries)
+⚡ Optimistic updates (UI updates before server response)
+
+```tsx
+const mutation = useMutation({
+  mutationFn: (newTodo) => axios.post('/todos', newTodo),
+  onSuccess: () => {
+    queryClient.invalidateQueries(['todos']) // Refresh todos list
+  },
+})
+
+// Trigger:
+mutation.mutate({ title: 'New Todo' })
+```
+
+#### Use Cases:
+
+- Creating/updating/deleting records
+- Form submissions
+- API calls that change server state
+
 ## 1 - Create a Query Client
 
 On a `lib/query.ts` file, create the `queryClient`:
@@ -291,5 +343,102 @@ function App() {
       </QueryClientProvider>
     </ThemeProvider>
   )
+}
+```
+
+## Creating my first request - Sign-In:
+
+In order to keep all the API request funcions organized, create a `/src/api` folder.
+
+### The API request file:
+
+This file will contain a function that will perform the api request. This will use the `api` setting that we create on the `lib/axios.ts` file.
+
+All the requests will have an interface that will define the data structure of the request body.
+Sign in function:
+
+```ts
+import { api } from '@/lib/axios'
+
+export interface SignInBody {
+  email: string
+}
+
+export async function signIn(body: SignInBody) {
+  await api.post('/authenticate', {
+    email: body.email,
+  })
+}
+```
+
+To be more concise, the `body` can be destructured, so the function recieves directly the `email`.
+
+```ts
+export async function signIn({ email }: SignInBody) {
+  await api.post('/authenticate', { email })
+}
+```
+
+### On the Sign-in page:
+
+On the page, i'm using the useMutation hook. This hook allows us to control the api call (see Mutation and Query definitions above) with controls like:
+
+- **mutationFn** - what function we'll run? (on this case, the `signIn` function we just created)
+- **retry** (how many times this call is going to try) / **retryDelay** (how long it'll take for a retry to happen)
+- **onSuccess** (what is happening after a successful api call)
+- **onSettled** (when all is done...)
+- **onMutate** (when the mutation is happening...)
+- etc.
+
+This hook also return a number of information, like:
+
+- request **status** (the `status` itself, and boolean states like `isIdle`, `isPending`, `isSuccess`, `isError`)
+- when it was **submitted** with `submittedAt`
+- etc.
+
+Now we're only using `mutateAsync`, the function that is going to trigger the `mutationFn`
+(i'm going to rename it to 'authenticate' to be more specific, if there are more mutation on the same file)
+**Our hook:**
+
+```tsx
+//added imports
+import { signIn } from '@/api/sign-in'
+import { useMutation } from '@tanstack/react-query'
+
+//inside the component
+const { mutateAsync: authenticate } = useMutation({
+  mutationFn: signIn, //axios function created on the /api folder
+})
+```
+
+On the submit function of the Sign In form, we're passing the `authenticate` function (to trigger the mutation). It gets the request body as an argument. This is alredy typed because of the interface on the `signIn` function, our `mutationFn`. So Typescript will prevent invalid request body structures.
+
+I changed all the visual responses from the request to the `useMutation` hook and called directly the `authenticate` function on the submit function, without the try/catch.
+
+```tsx
+const { mutateAsync: authenticate } = useMutation({
+  mutationFn: signIn, //axios function created on the /api folder
+  onSuccess: () => {
+    toast.success('Login success', {
+      description:
+        'Check your e-mail for your personalized authentification link.',
+      action: {
+        label: 'Send again',
+        onClick: () => {
+          toast.success('Sent again')
+        },
+      },
+    })
+  },
+  onError: (error) => {
+    toast.error('Login failed', {
+      description: error.message,
+    })
+    console.error(error)
+  },
+})
+
+async function handleSignIn(data: signInFormType) {
+  authenticate({ email: data.email })
 }
 ```

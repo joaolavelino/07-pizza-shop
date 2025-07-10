@@ -1,8 +1,10 @@
 import type { DefaultPageProps } from '@/_types/pagesTypes'
+import { signIn } from '@/api/sign-in'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { LucidePizza } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
@@ -25,33 +27,30 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
   } = useForm<signInFormType>({
     resolver: zodResolver(signInSchema),
   })
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn, //axios function created on the /api folder
+    onSuccess: () => {
+      toast.success('Login success', {
+        description:
+          'Check your e-mail for your personalized authentification link.',
+        action: {
+          label: 'Send again',
+          onClick: () => {
+            toast.success('Sent again')
+          },
+        },
+      })
+    },
+    onError: (error) => {
+      toast.error('Login failed', {
+        description: error.message,
+      })
+      console.error(error)
+    },
+  })
 
   async function handleSignIn(data: signInFormType) {
-    try {
-      const randomNumber: number = await new Promise((resolve) =>
-        setTimeout(() => resolve(Math.floor(Math.random() * 100)), 2000),
-      )
-      if (randomNumber % 2 == 0) {
-        toast.success('Login success', {
-          description:
-            'Check your e-mail for your personalized authentification link.',
-          action: {
-            label: 'Send again',
-            onClick: () => {
-              toast.success('Sent again')
-            },
-          },
-        })
-      } else {
-        throw new Error('Email not registered.')
-      }
-    } catch (error) {
-      toast.error('Login failed', {
-        description: 'Invalid credentials.',
-      })
-      console.log(error)
-    }
-    console.log(data)
+    authenticate({ email: data.email })
   }
   return (
     <>
