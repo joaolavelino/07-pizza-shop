@@ -1,10 +1,9 @@
 import { NAV_LINKS } from '@/_constants/constants'
 import { Pizza } from 'lucide-react'
+import { AccountMenu } from './AccountMenu'
 import { NavigationLink } from './NavLink'
 import { ThemeToggle } from './ThemeToggle'
 import { Separator } from './ui/separator'
-import { AccountMenu } from './AccountMenu'
-import { MobileNav } from './MobileNav'
 
 export const Header: React.FC = () => {
   return (
@@ -23,15 +22,11 @@ export const Header: React.FC = () => {
           ))}
         </nav>
       </div>
-
       <div className="flex items-center gap-2">
         <div className="hidden gap-2 md:flex">
           <ThemeToggle />
-          <AccountMenu />
         </div>
-        <div className="flex md:hidden">
-          <MobileNav />
-        </div>
+        <AccountMenu />
       </div>
     </header>
   )

@@ -15,3 +15,5 @@ export async function getManagedRestaurant() {
   )
   return response.data
 }
+
+export const MANAGED_RESTAURANT_KEY = 'managed-restaurants' as const

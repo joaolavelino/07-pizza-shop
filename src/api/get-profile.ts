@@ -14,3 +14,5 @@ export async function getProfile() {
   const response = await api.get<getProfileResponse>('/me')
   return response.data
 }
+
+export const GET_PROFILE_KEY = 'user-profile' as const
