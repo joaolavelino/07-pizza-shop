@@ -30,12 +30,12 @@ export const AccountMenu: React.FC = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { mutateAsync: signOutFn, isPending } = useMutation({
+  const { mutateAsync: signOutFn, isPending: isSignOutPending } = useMutation({
     mutationFn: signOut,
     onSuccess: () => {
       queryClient.clear() //clear cached queries
       toast.success('Sign-out success')
-      navigate('/sign-in')
+      navigate('/sign-in', { replace: true }) //this create a new 'navigation flow, not allowing the user to simply clicking back
     },
     onError: (error) => {
       toast.error(error.name || 'Sign-out Failed', {
@@ -121,13 +121,13 @@ export const AccountMenu: React.FC = () => {
             </DialogTrigger>
             <DropdownMenuItem
               onClick={() => signOutFn()}
-              disabled={isPending}
-              aria-busy={isPending}
-              aria-disabled={isPending}
+              disabled={isSignOutPending}
+              aria-busy={isSignOutPending}
+              aria-disabled={isSignOutPending}
             >
               <LogOut className="text-rose-500 dark:text-rose-400" />
               <span className="text-rose-500 dark:text-rose-400">Sign-out</span>
-              {isPending && <LoaderCircle className="animate-spin" />}
+              {isSignOutPending && <LoaderCircle className="animate-spin" />}
             </DropdownMenuItem>
           </div>
 
