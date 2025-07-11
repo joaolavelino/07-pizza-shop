@@ -620,7 +620,7 @@ refetchOnWindowFocus: false,
 refetchOnReconnect: false
 ```
 
-### Update HTTP States
+### Update HTTP States with Invalidate
 
 After a mutation, the HTTP state is not immediately updated. In order to do so, we need to set the mutation to **invalidate** the query.
 
@@ -705,3 +705,87 @@ This looks interesting but may create inconsistencies on some scenarios. Here ar
 | **Financial transactions** | ❌ | Discrepancies are unacceptable | Pessimistic + loading states |
 | **Complex DB writes** | ❌ | Risk of unrecoverable state | Multi-step confirmation |
 | **Collaborative editing** | ⚠️ | Requires conflict resolution | Operational transforms (CRDTs)
+
+### Querys with Query Params
+
+In order to use a query param, we need to, first, refactor our api call:
+
+#### Update API call:
+
+```ts
+import { api } from '@/lib/axios'
+
+export interface GetOrdersQuery {
+  pageIndex?: number | null
+}
+
+export interface GetOrdersResponse {
+  orders: {
+    orderId: string
+    createdAt: Date
+    status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
+    customerName: string
+    total: number
+  }[]
+  meta: {
+    pageIndex: number
+    perPage: number
+    totalCount: number
+  }
+}
+
+export async function getOrders(queries: GetOrdersQuery) {
+  const response = await api.get<GetOrdersResponse>('/orders', {
+    params: {
+      pageIndex: queries.pageIndex || 0,
+    },
+  })
+
+  return response.data
+}
+
+export const GET_ORDERS_KEY = 'orders' as const
+```
+
+##### What did we do?
+
+1. Create an interface for the query parameters:
+
+```ts
+export interface GetOrdersQuery {
+  pageIndex?: number | null
+}
+```
+
+2. Added the queries on as the main function`s argument, with it's interface:
+
+```tsx
+export async function getOrders(queries: GetOrdersQuery) {
+  // rest of function
+}
+```
+
+3. Sent an options object with the params as the second argument on the `api.get()` function (1st parameter is the url):
+
+```tsx
+const response = await api.get<GetOrdersResponse>('/orders', {
+    params: {
+      pageIndex: queries.pageIndex || 0,
+    },
+```
+
+#### Update add the params on the useQuery()
+
+On the `useQuery` hook we need to:
+
+1. Pass a second item to the `queryKey` array. Without this second parameter,
+2. Add the params on the argument of the `queryFn` (remember to arrow function to pass an argument)
+
+```tsx
+const { data: result } = useQuery({
+  queryKey: [GET_ORDERS_KEY, pageIndex],
+  queryFn: () => getOrders({ pageIndex: pageIndex }),
+})
+```
+
+The most impressive thing is that React Query will add the navigated pages to the cache, so if we navigate to a page for a 2nd time, it will load instantaneously.

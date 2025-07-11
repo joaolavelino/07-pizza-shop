@@ -10,12 +10,14 @@ export interface PaginationProps {
   pageIndex: number
   entriesNumber: number
   perPage: number
+  onPageChange: (pageIndex: number) => void | Promise<void>
 }
 
 export const Pagination: React.FC<PaginationProps> = ({
   pageIndex,
   perPage,
   entriesNumber,
+  onPageChange,
 }) => {
   const pages = Math.ceil(entriesNumber / perPage) || 1
 
@@ -26,11 +28,21 @@ export const Pagination: React.FC<PaginationProps> = ({
       </span>
       <div className="flex items-center gap-6 lg:gap-8">
         <div className="flex items-center gap-2">
-          <Button variant={'outline'} className="h-8 w-8 p-0">
+          <Button
+            variant={'outline'}
+            className="h-8 w-8 p-0"
+            onClick={() => onPageChange(0)}
+            disabled={pageIndex == 0}
+          >
             <ChevronsLeft />
             <span className="sr-only">Back to the first page</span>
           </Button>
-          <Button variant={'outline'} className="h-8 w-8 p-0">
+          <Button
+            variant={'outline'}
+            className="h-8 w-8 p-0"
+            onClick={() => onPageChange(pageIndex - 1)}
+            disabled={pageIndex == 0}
+          >
             <ChevronLeft />
             <span className="sr-only">Previous page</span>
           </Button>
@@ -38,11 +50,21 @@ export const Pagination: React.FC<PaginationProps> = ({
             Page <strong className="text-foreground">{pageIndex + 1} </strong>of{' '}
             {pages}
           </div>
-          <Button variant={'outline'} className="h-8 w-8 p-0">
+          <Button
+            variant={'outline'}
+            className="h-8 w-8 p-0"
+            onClick={() => onPageChange(pageIndex + 1)}
+            disabled={pageIndex == pages - 1}
+          >
             <ChevronRight />
             <span className="sr-only">Next page</span>
           </Button>
-          <Button variant={'outline'} className="h-8 w-8 p-0">
+          <Button
+            variant={'outline'}
+            className="h-8 w-8 p-0"
+            onClick={() => onPageChange(pages - 1)}
+            disabled={pageIndex == pages - 1}
+          >
             <ChevronsRight />
             <span className="sr-only">Last page</span>
           </Button>

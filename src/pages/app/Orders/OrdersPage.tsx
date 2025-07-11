@@ -12,12 +12,29 @@ import { OrderTableRow } from './components/OrderTableRow'
 import { useQuery } from '@tanstack/react-query'
 import { GET_ORDERS_KEY, getOrders } from '@/api/get-orders'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSearchParams } from 'react-router-dom'
+import z from 'zod'
 
 export const OrdersPage: React.FC = () => {
+  const [searchParams, setSearhParams] = useSearchParams()
+
+  const pageIndex = z.coerce
+    .number() //transform it to a number
+    .transform((page) => page - 1) //subtract 1 from it (page=1 on the URL will become pageIndex=0)
+    .parse(searchParams.get('page') ?? 1) //choose the param, if absent, it's 1
+
   const { data: result } = useQuery({
-    queryKey: [GET_ORDERS_KEY],
-    queryFn: getOrders,
+    queryKey: [GET_ORDERS_KEY, pageIndex],
+    queryFn: () => getOrders({ pageIndex: pageIndex }),
   })
+
+  function handlePaginate(pageIndex: number) {
+    const newPage = pageIndex + 1 //on the url and paginantion we are using the first page as 1, instead of zero
+    setSearhParams((state) => {
+      state.set('page', newPage.toString())
+      return state
+    })
+  }
 
   return (
     <>
@@ -73,14 +90,18 @@ export const OrdersPage: React.FC = () => {
                     ))}
               </TableBody>
             </Table>
-            <Pagination
-              entriesNumber={result?.meta.totalCount || 0}
-              perPage={result?.meta.perPage || 10}
-              pageIndex={result?.meta.pageIndex || 0}
-            />
+            {result && (
+              <Pagination
+                onPageChange={handlePaginate}
+                entriesNumber={result?.meta.totalCount || 0}
+                perPage={result?.meta.perPage || 10}
+                pageIndex={pageIndex}
+              />
+            )}
           </div>
         </div>
       </div>
     </>
   )
 }
+//result?.meta.pageIndex || 0

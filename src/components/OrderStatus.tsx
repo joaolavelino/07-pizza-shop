@@ -35,17 +35,17 @@ type StatusConfig = {
 const orderStatusMapComplex: Record<OrderStatus, StatusConfig> = {
   canceled: {
     label: 'Canceled',
-    color: 'text-destructive',
+    color: 'text-rose-500',
     icon: XCircle,
   },
   delivered: {
     label: 'Delivered',
-    color: 'text-success',
+    color: 'text-emerald-500',
     icon: CheckCircle2,
   },
   delivering: {
     label: 'Delivering',
-    color: 'text-warning',
+    color: 'text-amber-500',
     icon: Truck,
   },
   pending: {
@@ -55,7 +55,7 @@ const orderStatusMapComplex: Record<OrderStatus, StatusConfig> = {
   },
   processing: {
     label: 'Processing',
-    color: 'text-warning',
+    color: 'text-amber-500',
     icon: Cog,
   },
 }
