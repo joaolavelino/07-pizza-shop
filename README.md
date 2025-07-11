@@ -567,3 +567,82 @@ export const AccountMenuLabel: React.FC = () => {
 | Side effects     | Minimal    | Essential     |
 
 [//]: # 'Pro tip: Keep mutations self-contained'
+
+### Stale Time
+
+It defines how long it'll take to the fetched information is considered stale to Tanstack Query. If it's stale, it will be refetched if:
+
+- New component mounts
+- Window regains focus
+- Network reconnects
+- Query is invalidated
+
+#### Usage
+
+```tsx
+const { data: restaurantProfile, isLoading: isLoadingManagedRestaurant } =
+  useQuery({
+    queryKey: [MANAGED_RESTAURANT_KEY],
+    queryFn: getManagedRestaurant,
+    staleTime: 1000 * 60 * 60 * 24,
+  })
+```
+
+#### Recommended Stale Times:
+
+| Scenario           | `staleTime`           | Rationale                        |
+| ------------------ | --------------------- | -------------------------------- |
+| **Real-time data** | `0` (default)         | Stock prices, live notifications |
+| **User data**      | `1000 * 60 * 60 * 24` | Balance changes, profile edits   |
+| **Static content** | `1000 * 60 * 60 * 24` | Product descriptions, help docs  |
+
+#### Infinite stale time
+
+You can use `Infinity` as the `staleTime` if your data never becomes stale automatically and should only update when you manually trigger a refetch. This is a valid pattern for truly static data or when you want full control over updates.
+
+| Scenario                     | Example                      | Rationale                         | Implementation Tip              |
+| ---------------------------- | ---------------------------- | --------------------------------- | ------------------------------- |
+| **Manually controlled data** | CMS content, feature flags   | Changes only via UI/admin actions | Combine with `refetch()` button |
+| **Never-changing data**      | Archived orders, old reports | Data is read-only after creation  | Add `cacheTime: Infinity`       |
+| **Offline-first apps**       | Field service apps           | Sync only when user triggers      | Use with `persistQueryClient`   |
+
+**Warning**: Only use this if you're certain the data won't change behind the scenes. For most cases, a finite but large staleTime (e.g., 24 hours) is safer.
+
+**Additional** settings are needed when working with really immutable changes:
+
+- `cacheTime`: Allows cache persistance: Data remains in cache, until `cacheTime`expires (Default: 5 minutes)
+
+#### Alternatives for infinite stale time
+
+```tsx
+refetchOnMount: false,
+refetchOnWindowFocus: false,
+refetchOnReconnect: false
+```
+
+### Update HTTP States
+
+After a mutation, the HTTP state is not immediately updated. In order to do so, we need to set the mutation to **invalidate** the query.
+
+First, get the `queryClient` using the hook `useQueryClient`. Then use its method `invalidateQueries` with the `queryKey` to make this query to be refetched, thus updating the cache.
+Example of `useMutation()` hook with **invalidation**
+
+```tsx
+const { mutateAsync: updateProfileFn, isPending: isUpdateProfilePending } =
+  useMutation({
+    mutationFn: updateRestaurantProfile,
+    onSuccess: async () => {
+      toast.success('Profile updated', {
+        description:
+          'Your new restaurant information is already visible for your customers',
+      })
+      await queryClient.invalidateQueries({
+        queryKey: [MANAGED_RESTAURANT_KEY], //the constant is used to avoid typing errors between queries.
+      })
+      closeFn()
+    },
+    onError: (error) => {
+      toast.error(error.name, { description: `${error.message} Try again` })
+    },
+  })
+```
