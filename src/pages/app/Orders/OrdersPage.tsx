@@ -1,9 +1,24 @@
 import { Pagination } from '@/components/Pagination'
-import { Table, TableBody, TableHead, TableHeader } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { OrderTableFilter } from './components/OrderTableFilter'
 import { OrderTableRow } from './components/OrderTableRow'
+import { useQuery } from '@tanstack/react-query'
+import { GET_ORDERS_KEY, getOrders } from '@/api/get-orders'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export const OrdersPage: React.FC = () => {
+  const { data: result } = useQuery({
+    queryKey: [GET_ORDERS_KEY],
+    queryFn: getOrders,
+  })
+
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -24,12 +39,45 @@ export const OrdersPage: React.FC = () => {
                 <TableHead className="w-12 lg:w-25"></TableHead>
               </TableHeader>
               <TableBody>
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <OrderTableRow key={i} />
-                ))}
+                {result
+                  ? result.orders.map((order) => (
+                      <OrderTableRow key={order.orderId} order={order} />
+                    ))
+                  : Array.from({ length: 10 }).map((_, i) => (
+                      <TableRow key={i} className="flex w-full">
+                        <TableCell>
+                          <Skeleton className="h-4 w-12"></Skeleton>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-25"></Skeleton>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-30"></Skeleton>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-15 md:w-30"></Skeleton>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="hidden h-4 w-full lg:flex"></Skeleton>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-30"></Skeleton>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-12 lg:w-25"></Skeleton>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-12 lg:w-25"></Skeleton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
-            <Pagination entriesNumber={45} perPage={5} pageIndex={1} />
+            <Pagination
+              entriesNumber={result?.meta.totalCount || 0}
+              perPage={result?.meta.perPage || 10}
+              pageIndex={result?.meta.pageIndex || 0}
+            />
           </div>
         </div>
       </div>

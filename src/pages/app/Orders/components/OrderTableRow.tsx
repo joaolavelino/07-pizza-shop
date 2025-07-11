@@ -3,10 +3,15 @@ import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { OrderDetails } from './OrderDetails'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import type { OrdersFromList } from '@/_types/ordersTypes'
+import { formatCurrency, formatDateToNow } from '@/_util/format'
+import { OrderStatus } from '@/components/OrderStatus'
 
-export interface OrderTableRowProps {}
+export interface OrderTableRowProps {
+  order: OrdersFromList
+}
 
-export const OrderTableRow: React.FC<OrderTableRowProps> = () => {
+export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
   return (
     <TableRow>
       <TableCell>
@@ -20,20 +25,21 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = () => {
           <OrderDetails />
         </Dialog>
       </TableCell>
-      <TableCell className="font-mono text-xs font-medium">1234556</TableCell>
-      <TableCell className="text-muted-foreground">5 min ago</TableCell>
+      <TableCell className="font-mono text-xs font-medium">
+        {order.orderId}
+      </TableCell>
+      <TableCell className="text-muted-foreground">
+        {formatDateToNow(order.createdAt)}
+      </TableCell>
       <TableCell>
-        <div className="flex items-center justify-center gap-2 md:justify-start">
-          <span className="h-2 w-2 rounded-full bg-slate-400"></span>
-          <span className="text-muted-foreground hidden font-medium md:block">
-            Pending
-          </span>
-        </div>
+        <OrderStatus status={order.status} />
       </TableCell>
       <TableCell className="hidden font-semibold lg:flex">
-        Richard Henshall
+        {order.customerName}
       </TableCell>
-      <TableCell className="font-semibold">€ 38,90</TableCell>
+      <TableCell className="font-semibold">
+        {formatCurrency(order.total)}
+      </TableCell>
       <TableCell className="font-semibold">
         <Button variant={'secondary'} size="sm">
           <Check className="text-green-600" />
