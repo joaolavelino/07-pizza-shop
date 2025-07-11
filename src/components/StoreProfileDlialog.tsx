@@ -11,6 +11,7 @@ import {
   getManagedRestaurant,
   MANAGED_RESTAURANT_KEY,
 } from '@/api/get-managed-restaurant'
+import type { getManagedRestaurantResponse } from '@/api/get-managed-restaurant'
 
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -60,6 +61,20 @@ export const StoreProfileDialog: React.FC<StoreProfileDialogProps> = ({
   const { mutateAsync: updateProfileFn, isPending: isUpdateProfilePending } =
     useMutation({
       mutationFn: updateRestaurantProfile,
+      onMutate: (data: ShopProfileData) => {
+        //get previously cached data
+        const previousCachedData =
+          queryClient.getQueryData<getManagedRestaurantResponse>([
+            MANAGED_RESTAURANT_KEY,
+          ])
+        //change the cached data with new name, just to update the UI
+        queryClient.setQueryData([MANAGED_RESTAURANT_KEY], {
+          ...previousCachedData,
+          name: data.name,
+        })
+
+        return { previousCachedData }
+      },
       onSuccess: async () => {
         toast.success('Profile updated', {
           description:
@@ -70,7 +85,13 @@ export const StoreProfileDialog: React.FC<StoreProfileDialogProps> = ({
         })
         closeFn()
       },
-      onError: (error) => {
+      //I'm not using this second parameter, so I cancel it with my
+      onError: (error, _, context) => {
+        //revert the changes on the cached info (and UI)
+        queryClient.setQueryData(
+          [MANAGED_RESTAURANT_KEY],
+          context?.previousCachedData,
+        )
         toast.error(error.name, { description: `${error.message} Try again` })
       },
     })

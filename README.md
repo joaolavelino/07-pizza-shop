@@ -646,3 +646,62 @@ const { mutateAsync: updateProfileFn, isPending: isUpdateProfilePending } =
     },
   })
 ```
+
+### Optimistic interface
+
+Optimistic interfaces use the information provided to the mutation to update the UI before the request is setteled.
+To do so, a new state of the mutation is used: `onMutate`. This is an arrow function that is called during the mutation, before the `onSuccess`/`onError` outcomes.
+
+```tsx
+const { mutateAsync: updateProfileFn, isPending: isUpdateProfilePending } =
+  useMutation({
+    mutationFn: updateRestaurantProfile,
+    onMutate: (data: ShopProfileData) => {
+      //get previously cached data
+      const previousCachedData =
+        queryClient.getQueryData<getManagedRestaurantResponse>([
+          MANAGED_RESTAURANT_KEY,
+        ])
+      //change the cached data with new name, just to update the UI
+      queryClient.setQueryData([MANAGED_RESTAURANT_KEY], {
+        ...previousCachedData,
+        name: data.name,
+      })
+
+      return { previousCachedData }
+    },
+    onSuccess: async () => {
+      toast.success('Profile updated', {
+        description:
+          'Your new restaurant information is already visible for your customers',
+      })
+      await queryClient.invalidateQueries({
+        queryKey: [MANAGED_RESTAURANT_KEY],
+      })
+      closeFn()
+    },
+    onError: (error, _, context) => {
+      //revert the changes on the cached info (and UI)
+      queryClient.setQueryData(
+        [MANAGED_RESTAURANT_KEY],
+        context?.previousCachedData,
+      )
+      toast.error(error.name, { description: `${error.message} Try again` })
+    },
+  })
+```
+
+In this example, onMutate recieves the data passed on the mutationFn (don't forget to type this), performs an action and can return a value that will be passed to the next steps (in this case, we return the previously cached info, so we can revert in case of error on the request, on the `onError`outcome.)
+
+Inside of the function, the `queryClient` is used to get que cached data and update it.
+
+#### Risks
+
+This looks interesting but may create inconsistencies on some scenarios. Here are some notes about usability of this concept:
+| Scenario | Good Fit? | Why? | Alternative Approach |
+|------------------------------|-----------|----------------------------------------------------------------------|---------------------------------------|
+| **Fast actions** (likes, toggles) | ✅ | Users expect instant feedback | Show micro-interactions (e.g., pulse) |
+| **Ordered lists** (drag/drop) | ✅ | Visual continuity critical | Use placeholder animations |
+| **Financial transactions** | ❌ | Discrepancies are unacceptable | Pessimistic + loading states |
+| **Complex DB writes** | ❌ | Risk of unrecoverable state | Multi-step confirmation |
+| **Collaborative editing** | ⚠️ | Requires conflict resolution | Operational transforms (CRDTs)
