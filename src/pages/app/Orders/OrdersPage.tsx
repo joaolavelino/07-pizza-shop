@@ -1,4 +1,6 @@
+import { GET_ORDERS_KEY, getOrders } from '@/api/get-orders'
 import { Pagination } from '@/components/Pagination'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -7,13 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { OrderTableFilter } from './components/OrderTableFilter'
-import { OrderTableRow } from './components/OrderTableRow'
 import { useQuery } from '@tanstack/react-query'
-import { GET_ORDERS_KEY, getOrders } from '@/api/get-orders'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useSearchParams } from 'react-router-dom'
 import z from 'zod'
+import { OrderTableFilter } from './components/OrderTableFilter'
+import { OrderTableRow } from './components/OrderTableRow'
 
 export const OrdersPage: React.FC = () => {
   const [searchParams, setSearhParams] = useSearchParams()
@@ -61,30 +61,30 @@ export const OrdersPage: React.FC = () => {
                       <OrderTableRow key={order.orderId} order={order} />
                     ))
                   : Array.from({ length: 10 }).map((_, i) => (
-                      <TableRow key={i} className="flex w-full">
+                      <TableRow key={i} className="">
                         <TableCell>
-                          <Skeleton className="h-4 w-12"></Skeleton>
+                          <Skeleton className="h-8 w-8" />
+                        </TableCell>
+                        <TableCell className="font-mono text-xs font-medium">
+                          <Skeleton className="h-4" />
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          <Skeleton className="h-4" />
                         </TableCell>
                         <TableCell>
-                          <Skeleton className="h-4 w-25"></Skeleton>
+                          <Skeleton className="h-4" />
                         </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-30"></Skeleton>
+                        <TableCell className="hidden font-semibold md:flex">
+                          <Skeleton className="h-4" />
                         </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-15 md:w-30"></Skeleton>
+                        <TableCell className="font-semibold">
+                          <Skeleton className="h-4" />
                         </TableCell>
-                        <TableCell>
-                          <Skeleton className="hidden h-4 w-full lg:flex"></Skeleton>
+                        <TableCell className="font-semibold">
+                          <Skeleton className="h-8" />
                         </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-30"></Skeleton>
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-12 lg:w-25"></Skeleton>
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-12 lg:w-25"></Skeleton>
+                        <TableCell className="font-semibold">
+                          <Skeleton className="h-8" />
                         </TableCell>
                       </TableRow>
                     ))}
