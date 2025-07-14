@@ -57,13 +57,13 @@ export const OrdersPage: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableHead className="w-12"></TableHead>
-                <TableHead className="w-25">Id#</TableHead>
+                <TableHead className="hidden w-40 lg:table-cell">Id#</TableHead>
                 <TableHead className="w-30">Ordered at</TableHead>
                 <TableHead className="w-15 md:w-30">Status</TableHead>
-                <TableHead className="hidden lg:flex">Customer</TableHead>
+                <TableHead className="">Customer</TableHead>
                 <TableHead className="w-30">Order Total</TableHead>
-                <TableHead className="w-12 lg:w-25"></TableHead>
-                <TableHead className="w-12 lg:w-25"></TableHead>
+                <TableHead className="hidden w-12 md:table-cell lg:w-25"></TableHead>
+                <TableHead className="hidden w-12 md:table-cell lg:w-25"></TableHead>
               </TableHeader>
               <TableBody>
                 {result
@@ -90,10 +90,10 @@ export const OrdersPage: React.FC = () => {
                         <TableCell className="font-semibold">
                           <Skeleton className="h-4" />
                         </TableCell>
-                        <TableCell className="font-semibold">
+                        <TableCell className="hidden md:table-cell">
                           <Skeleton className="h-8" />
                         </TableCell>
-                        <TableCell className="font-semibold">
+                        <TableCell className="hidden md:table-cell">
                           <Skeleton className="h-8" />
                         </TableCell>
                       </TableRow>
@@ -114,4 +114,3 @@ export const OrdersPage: React.FC = () => {
     </>
   )
 }
-//result?.meta.pageIndex || 0

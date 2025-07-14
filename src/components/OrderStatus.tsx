@@ -24,6 +24,7 @@ type OrderStatus =
 
 export interface OrderStatusProps {
   status: OrderStatus
+  full?: boolean
 }
 
 type StatusConfig = {
@@ -60,7 +61,10 @@ const orderStatusMapComplex: Record<OrderStatus, StatusConfig> = {
   },
 }
 
-export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
+export const OrderStatus: React.FC<OrderStatusProps> = ({
+  status,
+  full = false,
+}) => {
   const { color, label, icon: Icon } = orderStatusMapComplex[status]
 
   return (
@@ -68,7 +72,9 @@ export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
       <span className={`text-${color}`}>
         {Icon && <Icon size={16} className={`${color}`} />}
       </span>
-      <span className="text-muted-foreground hidden font-medium md:block">
+      <span
+        className={`text-muted-foreground ${!full && 'hidden'} font-medium md:block`}
+      >
         {label}
       </span>
     </div>

@@ -17,6 +17,8 @@ import { GET_ORDER_DETAILS_KEY, getOrderDetails } from '@/api/get-order-details'
 import { OrderStatus } from '@/components/OrderStatus'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatCurrency, formatDateToNow } from '@/_util/format'
+import { Button } from '@/components/ui/button'
+import { Check } from 'lucide-react'
 
 export interface OrderDetailsProps {
   orderId: string
@@ -52,7 +54,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
               <TableRow>
                 <TableCell className="text-muted-foreground">Status</TableCell>
                 <TableCell className="flex justify-end">
-                  <OrderStatus status={orderDetails?.status} />
+                  <OrderStatus status={orderDetails?.status} full />
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -123,6 +125,16 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
           </Table>
         </>
       )}
+      <div className="w-fill mt-4 flex gap-2">
+        <Button variant="suceess" size={'lg'} className="flex-1">
+          <Check />
+          <span className="text-xs font-semibold">Approve</span>
+        </Button>
+        <Button variant="destructive" size={'lg'} className="flex-1">
+          <Check />
+          <span className="text-xs font-semibold">Cancel Order</span>
+        </Button>
+      </div>
     </DialogContent>
   )
 }
