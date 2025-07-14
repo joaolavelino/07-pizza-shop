@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Check, MoreHorizontal, X } from 'lucide-react'
+import { useState } from 'react'
 import { OrderDetails } from './OrderDetails'
 
 export interface OrderTableRowProps {
@@ -12,17 +13,18 @@ export interface OrderTableRowProps {
 }
 
 export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   return (
     <TableRow>
       <TableCell>
-        <Dialog>
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
           <DialogTrigger>
             <Button variant="outline" size="icon">
               <MoreHorizontal />
               <span className="sr-only">Order Details</span>
             </Button>
           </DialogTrigger>
-          <OrderDetails orderId={order.orderId} />
+          <OrderDetails open={isDetailsOpen} orderId={order.orderId} />
         </Dialog>
       </TableCell>
       <TableCell className="hidden font-mono text-xs font-medium lg:table-cell">
@@ -38,7 +40,7 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
         <span>{order.customerName}</span>
       </TableCell>
       <TableCell className="font-semibold">
-        {formatCurrency(order.total)}
+        {formatCurrency(order.total / 100)}
       </TableCell>
       <TableCell className="hidden md:table-cell">
         <Button variant={'secondary'} size="sm">

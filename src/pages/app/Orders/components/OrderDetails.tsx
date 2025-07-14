@@ -22,12 +22,17 @@ import { Check } from 'lucide-react'
 
 export interface OrderDetailsProps {
   orderId: string
+  open: boolean
 }
 
-export const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
+export const OrderDetails: React.FC<OrderDetailsProps> = ({
+  orderId,
+  open,
+}) => {
   const { data: orderDetails } = useQuery({
     queryKey: [GET_ORDER_DETAILS_KEY, orderId],
-    queryFn: () => getOrderDetails(orderId),
+    queryFn: () => getOrderDetails({ orderId }),
+    enabled: open,
   })
 
   return (

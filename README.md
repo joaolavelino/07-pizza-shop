@@ -790,6 +790,42 @@ const { data: result } = useQuery({
 
 The most impressive thing is that React Query will add the navigated pages to the cache, so if we navigate to a page for a 2nd time, it will load instantaneously.
 
+After adding all the parameters to enable, for instance, filters, the query will look like this:
+
+```tsx
+const { data: result } = useQuery({
+  queryKey: [GET_ORDERS_KEY, pageIndex, orderId, customerName, status],
+  queryFn: () =>
+    getOrders({
+      pageIndex: pageIndex,
+      orderId,
+      customerName,
+      status: status,
+    }),
+})
+```
+
+### Conditional Queries
+
+The queries will normally trigger when the component is rendered. But in some cases we don't want to let the query happen. One example is a table of items with a details Modal triggered by a button on the table row.
+
+By using Radix's Dialog, all the dialogs will automatically trigger a query. To avoid this behaviour we can use a useQuery propety called `enabled`.
+
+In this example, the dialogs on the table row were controlled by a state, and the state `open` was passed to the dialog component, and used as a boolean trigger to the query.
+
+```tsx
+export const OrderDetails: React.FC<OrderDetailsProps> = ({
+  orderId,
+  open,
+}) => {
+  const { data: orderDetails } = useQuery({
+    queryKey: [GET_ORDER_DETAILS_KEY, orderId],
+    queryFn: () => getOrderDetails({ orderId }),
+    enabled: open,
+  })
+
+```
+
 # React Hook Form - Contolled components
 
 Some form field components from UI libraries don't return the proper HTML Element, for instance, Radix's `<Select>` component.
