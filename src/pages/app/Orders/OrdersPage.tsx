@@ -23,9 +23,19 @@ export const OrdersPage: React.FC = () => {
     .transform((page) => page - 1) //subtract 1 from it (page=1 on the URL will become pageIndex=0)
     .parse(searchParams.get('page') ?? 1) //choose the param, if absent, it's 1
 
+  const orderId = searchParams.get('orderId')
+  const customerName = searchParams.get('customerName')
+  const status = searchParams.get('status')
+
   const { data: result } = useQuery({
-    queryKey: [GET_ORDERS_KEY, pageIndex],
-    queryFn: () => getOrders({ pageIndex: pageIndex }),
+    queryKey: [GET_ORDERS_KEY, pageIndex, orderId, customerName, status],
+    queryFn: () =>
+      getOrders({
+        pageIndex: pageIndex,
+        orderId,
+        customerName,
+        status: status,
+      }),
   })
 
   function handlePaginate(pageIndex: number) {

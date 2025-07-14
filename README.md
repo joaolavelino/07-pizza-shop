@@ -789,3 +789,50 @@ const { data: result } = useQuery({
 ```
 
 The most impressive thing is that React Query will add the navigated pages to the cache, so if we navigate to a page for a 2nd time, it will load instantaneously.
+
+# React Hook Form - Contolled components
+
+Some form field components from UI libraries don't return the proper HTML Element, for instance, Radix's `<Select>` component.
+Since these components doesn't have the HTML elements itself, it's not possible to use the `register` function from RHF. We need to use the `<Controler>` component from the library.
+
+These code examples are from `07-pizza-shop` project, on the `OrderTableFiltes.tsx` component:
+
+## 1 - Import the control function from within the `useForm` hook.
+
+```tsx
+const { register, handleSubmit, control } = useForm<OrderFiltersDataType>({
+  resolver: zodResolver(orderFiltersSchema),
+})
+```
+
+## 2 - Inport the <Controller> component from RHF and with it's `render` property, render the `<Select>`
+
+The render property recieves an arrow function, and on it's arguments we can get some of the field's information. We pass this information on the Select element, like so:
+
+```tsx
+<Controller
+  name="orderStatus"
+  control={control}
+  render={({ field: { name, onChange, value, disabled } }) => (
+    <Select
+      defaultValue="all"
+      name={name}
+      onValueChange={onChange}
+      value={value}
+      disabled={disabled}
+    >
+      <SelectTrigger className="flex-1 md:w-[140px]">
+        <SelectValue className="" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">All</SelectItem>
+        <SelectItem value="pending">Pending</SelectItem>
+        <SelectItem value="canceled">canceled</SelectItem>
+        <SelectItem value="processing">Processing</SelectItem>
+        <SelectItem value="delivery">Delivery</SelectItem>
+        <SelectItem value="delivered">Delivered</SelectItem>
+      </SelectContent>
+    </Select>
+  )}
+/>
+```
