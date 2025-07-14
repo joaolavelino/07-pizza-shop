@@ -1,7 +1,36 @@
 export type OrdersFromList = {
   orderId: string
   createdAt: Date
-  status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
+  status: OrderStatus
   customerName: string
   total: number
+}
+
+export type OrderStatus =
+  | 'pending'
+  | 'canceled'
+  | 'processing'
+  | 'delivering'
+  | 'delivered'
+
+export interface OrderDetails {
+  id: string
+  createdAt: Date
+  status: OrderStatus
+  totalInCents: number
+  customer: {
+    name: string
+    phone: string | null
+    email: string
+  }
+  orderItems: OrderItem[]
+}
+
+export interface OrderItem {
+  id: string
+  priceInCents: number
+  quantity: number
+  product: {
+    name: string
+  }
 }

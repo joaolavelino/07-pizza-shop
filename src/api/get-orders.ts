@@ -1,3 +1,4 @@
+import type { OrdersFromList } from '@/_types/ordersTypes'
 import { api } from '@/lib/axios'
 
 export interface GetOrdersQuery {
@@ -8,13 +9,7 @@ export interface GetOrdersQuery {
 }
 
 export interface GetOrdersResponse {
-  orders: {
-    orderId: string
-    createdAt: Date
-    status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
-    customerName: string
-    total: number
-  }[]
+  orders: OrdersFromList[]
   meta: {
     pageIndex: number
     perPage: number

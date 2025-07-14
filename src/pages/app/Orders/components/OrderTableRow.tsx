@@ -22,7 +22,7 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
               <span className="sr-only">Order Details</span>
             </Button>
           </DialogTrigger>
-          <OrderDetails />
+          <OrderDetails orderId={order.orderId} />
         </Dialog>
       </TableCell>
       <TableCell className="font-mono text-xs font-medium">
@@ -34,8 +34,8 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
       <TableCell>
         <OrderStatus status={order.status} />
       </TableCell>
-      <TableCell className="hidden font-semibold lg:flex">
-        {order.customerName}
+      <TableCell className="hidden font-semibold lg:flex lg:items-center">
+        <span>{order.customerName}</span>
       </TableCell>
       <TableCell className="font-semibold">
         {formatCurrency(order.total)}
