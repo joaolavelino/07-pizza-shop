@@ -20,6 +20,7 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
     useState(false)
 
   function closeConfirmation() {
+    window.alert('close Modal')
     setIsCancelConfirmationOpen(false)
   }
 
@@ -84,6 +85,7 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
           <OrderCancelConfirmation
             orderId={order.orderId}
             closeFn={closeConfirmation}
+            shouldCloseOnSuccess
           />
         </Dialog>
       </TableCell>

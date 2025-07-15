@@ -826,6 +826,50 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
 
 ```
 
+### Manually update the cache.
+
+When you're working on a mutation and don't want a subsequent refetch (caused by the query invalidation) that would trigger a rerender of the component, or have an unexpected UI updated caused by a different Backend response, **it's possible to update the cache manually**
+
+⚠ I sincerely have a problem of manually rerwiting the cached information, but in some situations this is the only solution to make a fluid UX.
+
+In this example from the Order Cancelling feature of the Pizza Shop projetct, both Order List and Order Details Queries are updated.
+Order List require multiple query updates because of the pagination, and filtering queries.
+Order Details is much simpler since it's only one query whose cache will be manipulated
+
+```tsx
+//cancel manually to avoid refetch - change pagination
+//OrderList
+const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
+  queryKey: [GET_ORDERS_KEY],
+})
+
+ordersListCache.forEach(([cacheKey, cacheData]) => {
+  if (!cacheData) {
+    return
+  }
+  queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
+    ...cacheData,
+    orders: cacheData.orders.map((order: OrdersFromList) => {
+      if (order.orderId == orderId) {
+        return { ...order, status: 'canceled' }
+      }
+      return order
+    }),
+  })
+})
+//OrderDetails
+queryClient.setQueryData(
+  [GET_ORDER_DETAILS_KEY, orderId],
+  (cachedData: OrderDetails) => {
+    if (!cachedData) return
+    return {
+      ...cachedData,
+      status: 'canceled',
+    }
+  },
+)
+```
+
 # React Hook Form - Contolled components
 
 Some form field components from UI libraries don't return the proper HTML Element, for instance, Radix's `<Select>` component.

@@ -3,6 +3,7 @@ import {
   DialogHeader,
   DialogContent,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { useCancelOrder } from '@/hooks/useCancelOrder'
 
@@ -19,6 +20,7 @@ export const OrderCancelConfirmation: React.FC<
 > = ({ orderId, closeFn, shouldCloseOnSuccess = true }) => {
   const { cancelOrderFn, isCancelling, isCancelled } = useCancelOrder({
     orderId,
+    callbackFn: closeFn,
   })
 
   const handleConfirmation = async () => {
@@ -30,6 +32,9 @@ export const OrderCancelConfirmation: React.FC<
       <DialogHeader>
         <DialogTitle>Cancel Order Confirmation</DialogTitle>
       </DialogHeader>
+      <DialogDescription className="sr-only">
+        Order cancelation confirmation. Click on confirm to proceed.
+      </DialogDescription>
       <div className="my-8 space-y-4">
         <p>
           Do you really want to cancel the order <strong>{orderId}</strong>?
