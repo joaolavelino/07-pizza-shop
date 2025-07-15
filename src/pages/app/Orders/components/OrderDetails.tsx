@@ -18,14 +18,18 @@ import { OrderStatus } from '@/components/OrderStatus'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatCurrency, formatDateToNow } from '@/_util/format'
 import { Button } from '@/components/ui/button'
-import { Check } from 'lucide-react'
+import { Check, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { OrderCancelConfirmation } from './OrderCancelConfirmation'
+import { CANCELABLE_STATUSES } from '@/_constants/constants'
+import type { OrderDetails } from '@/_types/ordersTypes'
 
 export interface OrderDetailsProps {
   orderId: string
   open: boolean
 }
 
-export const OrderDetails: React.FC<OrderDetailsProps> = ({
+export const OrderDetailsModal: React.FC<OrderDetailsProps> = ({
   orderId,
   open,
 }) => {
@@ -35,6 +39,100 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
     enabled: open,
   })
 
+  const [isCancelling, setIsCancelling] = useState(false)
+
+  useEffect(() => {
+    if (open) {
+      setIsCancelling(false)
+    }
+  }, [open])
+
+  return (
+    <>
+      {isCancelling ? (
+        <OrderCancelConfirmation
+          closeFn={() => setIsCancelling(false)}
+          orderId={orderId}
+          shouldCloseOnSuccess={false}
+        />
+      ) : (
+        <OrderInformation
+          openCancelling={() => setIsCancelling(true)}
+          orderDetails={orderDetails}
+        />
+      )}
+    </>
+  )
+}
+
+const OrderDetailsSkeleton = () => {
+  return (
+    <>
+      <div className="my-4 space-y-4">
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 w-25" />
+          <Skeleton className="h-4 flex-1" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 w-25" />
+          <Skeleton className="h-4 flex-1" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 w-25" />
+          <Skeleton className="h-4 flex-1" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 w-25" />
+          <Skeleton className="h-4 flex-1" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 w-25" />
+          <Skeleton className="h-4 flex-1" />
+        </div>
+      </div>
+      <div className="space-y-4">
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-6 flex-1" />
+          <Skeleton className="h-6 w-10" />
+          <Skeleton className="h-6 w-18" />
+          <Skeleton className="h-6 w-18" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 flex-1" />
+          <Skeleton className="h-4 w-10" />
+          <Skeleton className="h-4 w-18" />
+          <Skeleton className="h-4 w-18" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 flex-1" />
+          <Skeleton className="h-4 w-10" />
+          <Skeleton className="h-4 w-18" />
+          <Skeleton className="h-4 w-18" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 flex-1" />
+          <Skeleton className="h-4 w-10" />
+          <Skeleton className="h-4 w-18" />
+          <Skeleton className="h-4 w-18" />
+        </div>
+        <div className="flex h-6 w-full items-center gap-2">
+          <Skeleton className="h-4 flex-1" />
+          <Skeleton className="h-4 w-18" />
+        </div>
+      </div>
+    </>
+  )
+}
+
+interface OrderInformationProps {
+  orderDetails: OrderDetails | undefined
+  openCancelling: () => void
+}
+
+const OrderInformation: React.FC<OrderInformationProps> = ({
+  orderDetails,
+  openCancelling,
+}) => {
   return (
     <DialogContent>
       <DialogHeader>
@@ -128,77 +226,29 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               </TableRow>
             </TableFooter>
           </Table>
+          <div className="w-fill mt-4 flex gap-2">
+            <Button
+              variant="suceess"
+              size={'lg'}
+              className="flex-1"
+              disabled={orderDetails.status == 'canceled'}
+            >
+              <Check />
+              <span className="text-xs font-semibold">Approve</span>
+            </Button>
+            <Button
+              onClick={openCancelling}
+              disabled={!CANCELABLE_STATUSES.includes(orderDetails.status)}
+              variant="destructive"
+              size={'lg'}
+              className="flex-1"
+            >
+              <X />
+              <span className="text-xs font-semibold">Cancel Order</span>
+            </Button>
+          </div>
         </>
       )}
-      <div className="w-fill mt-4 flex gap-2">
-        <Button variant="suceess" size={'lg'} className="flex-1">
-          <Check />
-          <span className="text-xs font-semibold">Approve</span>
-        </Button>
-        <Button variant="destructive" size={'lg'} className="flex-1">
-          <Check />
-          <span className="text-xs font-semibold">Cancel Order</span>
-        </Button>
-      </div>
     </DialogContent>
-  )
-}
-
-const OrderDetailsSkeleton = () => {
-  return (
-    <>
-      <div className="my-4 space-y-4">
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 w-25" />
-          <Skeleton className="h-4 flex-1" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 w-25" />
-          <Skeleton className="h-4 flex-1" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 w-25" />
-          <Skeleton className="h-4 flex-1" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 w-25" />
-          <Skeleton className="h-4 flex-1" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 w-25" />
-          <Skeleton className="h-4 flex-1" />
-        </div>
-      </div>
-      <div className="space-y-4">
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-6 flex-1" />
-          <Skeleton className="h-6 w-10" />
-          <Skeleton className="h-6 w-18" />
-          <Skeleton className="h-6 w-18" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 flex-1" />
-          <Skeleton className="h-4 w-10" />
-          <Skeleton className="h-4 w-18" />
-          <Skeleton className="h-4 w-18" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 flex-1" />
-          <Skeleton className="h-4 w-10" />
-          <Skeleton className="h-4 w-18" />
-          <Skeleton className="h-4 w-18" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 flex-1" />
-          <Skeleton className="h-4 w-10" />
-          <Skeleton className="h-4 w-18" />
-          <Skeleton className="h-4 w-18" />
-        </div>
-        <div className="flex h-6 w-full items-center gap-2">
-          <Skeleton className="h-4 flex-1" />
-          <Skeleton className="h-4 w-18" />
-        </div>
-      </div>
-    </>
   )
 }

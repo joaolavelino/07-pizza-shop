@@ -13,7 +13,7 @@ export type OrderStatus =
   | 'delivering'
   | 'delivered'
 
-export interface OrderDetails {
+export type OrderDetails = {
   id: string
   createdAt: Date
   status: OrderStatus
@@ -26,7 +26,7 @@ export interface OrderDetails {
   orderItems: OrderItem[]
 }
 
-export interface OrderItem {
+export type OrderItem = {
   id: string
   priceInCents: number
   quantity: number

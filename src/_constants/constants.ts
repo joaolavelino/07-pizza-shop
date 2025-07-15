@@ -1,3 +1,4 @@
+import type { OrderStatus } from '@/_types/ordersTypes'
 import { Building, Home, UtensilsCrossed } from 'lucide-react'
 
 export const PAGE_TITLE = 'Pizza Shop'
@@ -24,4 +25,10 @@ export const NAV_LINKS = [
 
 export const ACCOUNT_MENU_LINKS = [
   { url: '/', name: 'Shop Profile', icon: Building },
+]
+
+export const CANCELABLE_STATUSES: OrderStatus[] = [
+  'pending',
+  'processing',
+  'delivering',
 ]
