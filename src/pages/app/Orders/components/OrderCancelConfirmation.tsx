@@ -5,7 +5,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog'
-import { useCancelOrder } from '@/hooks/useCancelOrder'
+import { useOrderStatus } from '@/hooks/useOrderStatus'
 
 import { Check, LoaderCircle } from 'lucide-react'
 
@@ -18,7 +18,7 @@ export interface OrderCancelConfirmationProps {
 export const OrderCancelConfirmation: React.FC<
   OrderCancelConfirmationProps
 > = ({ orderId, closeFn, shouldCloseOnSuccess = true }) => {
-  const { cancelOrderFn, isCancelling, isCancelled } = useCancelOrder({
+  const { cancelOrderFn, isCancelling, isCancelled } = useOrderStatus({
     orderId,
     callbackFn: closeFn,
   })

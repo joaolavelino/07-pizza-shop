@@ -4,11 +4,12 @@ import { OrderStatus } from '@/components/OrderStatus'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
-import { Check, MoreHorizontal, X } from 'lucide-react'
+import { LoaderCircle, MoreHorizontal, X } from 'lucide-react'
 import { useState } from 'react'
 import { OrderDetailsModal } from './OrderDetails'
 import { CANCELABLE_STATUSES } from '@/_constants/constants'
 import { OrderCancelConfirmation } from './OrderCancelConfirmation'
+import { useOrderStatus } from '@/hooks/useOrderStatus'
 
 export interface OrderTableRowProps {
   order: OrdersFromList
@@ -23,6 +24,12 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
     window.alert('close Modal')
     setIsCancelConfirmationOpen(false)
   }
+
+  const { statusChangeOptions, isApproving, isDelivering, isDispatching } =
+    useOrderStatus({
+      orderId: order.orderId,
+      orderStatus: order.status,
+    })
 
   return (
     <TableRow>
@@ -53,16 +60,23 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
         {formatCurrency(order.total / 100)}
       </TableCell>
       <TableCell className="hidden md:table-cell">
-        <Button
-          variant={'secondary'}
-          size="sm"
-          disabled={order.status == 'canceled'}
-        >
-          <Check className="text-green-600" />
-          <span className="sr-only text-xs font-semibold lg:not-sr-only">
-            Approve
-          </span>
-        </Button>
+        {statusChangeOptions && (
+          <Button
+            variant={'secondary'}
+            size="sm"
+            disabled={order.status == 'canceled'}
+            onClick={() => statusChangeOptions.handleStatusChange()}
+          >
+            {isApproving || isDelivering || isDispatching ? (
+              <LoaderCircle className="animate-spin" />
+            ) : (
+              <statusChangeOptions.icon className="text-green-600" />
+            )}
+            <span className="sr-only text-xs font-semibold lg:not-sr-only">
+              {statusChangeOptions.buttonText}
+            </span>
+          </Button>
+        )}
       </TableCell>
       <TableCell className="hidden font-semibold md:table-cell">
         <Dialog
