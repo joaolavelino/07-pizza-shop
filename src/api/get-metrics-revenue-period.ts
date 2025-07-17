@@ -11,7 +11,6 @@ interface getDailyRevenueProps {
 }
 
 export async function getDailyRevenue({ from, to }: getDailyRevenueProps) {
-  console.log(from, to)
   const response = await api.get<getDailyRevenueResponse>(
     '/metrics/daily-receipt-in-period',
     {
@@ -21,8 +20,6 @@ export async function getDailyRevenue({ from, to }: getDailyRevenueProps) {
       },
     },
   )
-  console.log(response)
-
   return response.data
 }
 

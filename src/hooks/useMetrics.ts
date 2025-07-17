@@ -31,6 +31,7 @@ import {
   DollarSign,
   type LucideIcon,
 } from 'lucide-react'
+import { useMemo } from 'react'
 import type { DateRange } from 'react-day-picker'
 
 interface MetricsCardInfo {
@@ -78,7 +79,7 @@ export function useMetrics({ dateRange }: useMetricsProps = {}) {
     queryFn: getPopularProducts,
   })
 
-  const { data: dailyRevenue } = useQuery({
+  const { data: dailyRevenueInCents } = useQuery({
     queryKey: [GET_METRICS_DAILY_REVENUE, dateRange],
     queryFn: () =>
       getDailyRevenue({
@@ -86,6 +87,15 @@ export function useMetrics({ dateRange }: useMetricsProps = {}) {
         to: dateRange?.to,
       }),
   })
+
+  const dailyRevenue = useMemo(() => {
+    return dailyRevenueInCents?.map((item) => {
+      return {
+        date: item.date,
+        receipt: item.receipt / 100,
+      }
+    })
+  }, [dailyRevenueInCents])
 
   const formattedCurrency = monthReceipt
     ? formatCurrency(monthReceipt.receipt / 100)
