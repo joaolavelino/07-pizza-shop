@@ -15,6 +15,10 @@ import {
   GET_METRICS_MONTH_RECEIPT,
   getMonthOrderReceipt,
 } from '@/api/get-metrics-month-receipt'
+import {
+  GET_METRICS_POPULAR_PRODUCTS,
+  getPopularProducts,
+} from '@/api/get-metrics-popular-products'
 import { useQuery } from '@tanstack/react-query'
 import {
   CalendarCheck,
@@ -31,6 +35,12 @@ interface MetricsCardInfo {
   infoSecondary: number | undefined
   isLoading: boolean
 }
+
+type MetricsOptions =
+  | 'dayOrdersAmount'
+  | 'monthOrdersAmount'
+  | 'monthReceipt'
+  | 'monthCanceledOrdersAmount'
 
 export function useMetrics() {
   const { data: dayOrdersAmount, isLoading: isDayOrdersAmountLoading } =
@@ -54,26 +64,16 @@ export function useMetrics() {
     queryKey: [GET_METRICS_MONTH_CANCELED_AMOUNT],
     queryFn: getMonthCanceledOrdersAmount,
   })
-
-  const metrics = {
-    dayOrdersAmount,
-    monthOrdersAmount,
-    monthReceipt,
-    monthCanceledOrdersAmount,
-  }
-
-  const metricsLoading = {
-    isDayOrdersAmountLoading,
-    isMonthOrdersAmountLoading,
-    isMonthReceiptLoading,
-    ismonthCanceledOrdersAmountLoading,
-  }
+  const { data: popularProductsList } = useQuery({
+    queryKey: [GET_METRICS_POPULAR_PRODUCTS],
+    queryFn: getPopularProducts,
+  })
 
   const formattedCurrency = monthReceipt
     ? formatCurrency(monthReceipt.receipt / 100)
     : '0'
 
-  const metricsCardsInfo: Record<string, MetricsCardInfo> = {
+  const metricsData: Record<MetricsOptions, MetricsCardInfo> = {
     dayOrdersAmount: {
       title: "Today's Orders",
       icon: CalendarCheck,
@@ -105,8 +105,7 @@ export function useMetrics() {
   }
 
   return {
-    metrics,
-    metricsLoading,
-    metricsCardsInfo,
+    metricsData,
+    popularProductsList,
   }
 }

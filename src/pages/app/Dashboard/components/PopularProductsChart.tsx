@@ -1,3 +1,4 @@
+import type { getPopularProductsProps } from '@/api/get-metrics-popular-products'
 import {
   Card,
   CardContent,
@@ -5,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -15,22 +17,28 @@ import {
 } from '@/components/ui/table'
 import { Star } from 'lucide-react'
 
-export interface PopularProductsChartProps {}
+export interface PopularProductsChartProps {
+  data: getPopularProductsProps | undefined
+}
 
-export const data = [
-  { name: 'Pepperoni', orders: 142 },
-  { name: 'Napoletana', orders: 128 },
-  { name: 'BBQ Chicken', orders: 98 },
-  { name: 'Hawaiian', orders: 85 },
-  { name: 'Margherita', orders: 76 },
-  { name: 'Mushroom Truffle', orders: 64 },
-  { name: 'Four Cheese', orders: 59 },
-  { name: 'Diavola', orders: 53 },
-  { name: 'Capricciosa', orders: 47 },
-  { name: 'White Pizza', orders: 39 },
-]
+// export const data = [
+//   { name: 'Pepperoni', orders: 142 },
+//   { name: 'Napoletana', orders: 128 },
+//   { name: 'BBQ Chicken', orders: 98 },
+//   { name: 'Hawaiian', orders: 85 },
+//   { name: 'Margherita', orders: 76 },
+//   { name: 'Mushroom Truffle', orders: 64 },
+//   { name: 'Four Cheese', orders: 59 },
+//   { name: 'Diavola', orders: 53 },
+//   { name: 'Capricciosa', orders: 47 },
+//   { name: 'White Pizza', orders: 39 },
+// ]
 
-export const PopularProductsChart: React.FC<PopularProductsChartProps> = () => {
+export const PopularProductsChart: React.FC<PopularProductsChartProps> = ({
+  data,
+}) => {
+  const sortedList = data?.sort((a, b) => b.amount - a.amount)
+
   return (
     <Card className="w-full lg:col-span-3">
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
@@ -77,15 +85,26 @@ export const PopularProductsChart: React.FC<PopularProductsChartProps> = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item, i) => (
-              <TableRow
-                key={`popular-line-${i}`}
-                className={`${i == 0 ? 'font-semibold text-white' : 'text-foreground'} first:bg-rose-500 first:hover:bg-rose-700`}
-              >
-                <TableCell>{item.name}</TableCell>
-                <TableCell className="text-right">{item.orders}</TableCell>
-              </TableRow>
-            ))}
+            {sortedList
+              ? sortedList.map((item, i) => (
+                  <TableRow
+                    key={`popular-line-${i}`}
+                    className={`${i == 0 ? 'font-semibold text-white' : 'text-foreground'} first:bg-rose-500 first:hover:bg-rose-700`}
+                  >
+                    <TableCell>{item.product}</TableCell>
+                    <TableCell className="text-right">{item.amount}</TableCell>
+                  </TableRow>
+                ))
+              : Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i} className="first:bg-rose-500">
+                    <TableCell>
+                      <Skeleton className="h-5 w-48" />
+                    </TableCell>
+                    <TableCell className="w-8">
+                      <Skeleton className="h-5 w-8" />
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </CardContent>
