@@ -19,6 +19,10 @@ import {
   GET_METRICS_POPULAR_PRODUCTS,
   getPopularProducts,
 } from '@/api/get-metrics-popular-products'
+import {
+  GET_METRICS_DAILY_REVENUE,
+  getDailyRevenue,
+} from '@/api/get-metrics-revenue-period'
 import { useQuery } from '@tanstack/react-query'
 import {
   CalendarCheck,
@@ -27,6 +31,7 @@ import {
   DollarSign,
   type LucideIcon,
 } from 'lucide-react'
+import type { DateRange } from 'react-day-picker'
 
 interface MetricsCardInfo {
   title: string
@@ -42,7 +47,11 @@ type MetricsOptions =
   | 'monthReceipt'
   | 'monthCanceledOrdersAmount'
 
-export function useMetrics() {
+interface useMetricsProps {
+  dateRange?: DateRange
+}
+
+export function useMetrics({ dateRange }: useMetricsProps = {}) {
   const { data: dayOrdersAmount, isLoading: isDayOrdersAmountLoading } =
     useQuery({
       queryKey: [GET_METRICS_DAY_AMOUNT],
@@ -67,6 +76,15 @@ export function useMetrics() {
   const { data: popularProductsList } = useQuery({
     queryKey: [GET_METRICS_POPULAR_PRODUCTS],
     queryFn: getPopularProducts,
+  })
+
+  const { data: dailyRevenue } = useQuery({
+    queryKey: [GET_METRICS_DAILY_REVENUE, dateRange],
+    queryFn: () =>
+      getDailyRevenue({
+        from: dateRange?.from,
+        to: dateRange?.to,
+      }),
   })
 
   const formattedCurrency = monthReceipt
@@ -107,5 +125,6 @@ export function useMetrics() {
   return {
     metricsData,
     popularProductsList,
+    dailyRevenue,
   }
 }

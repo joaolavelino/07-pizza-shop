@@ -104,7 +104,10 @@ export const AccountMenu: React.FC = () => {
               <DropdownMenuSeparator />
               <nav>
                 {NAV_LINKS.map((link) => (
-                  <DropdownMenuItem key={link.name}>
+                  <DropdownMenuItem
+                    key={link.name}
+                    onClick={() => navigate(link.url)}
+                  >
                     <link.icon className="mr-2" />
                     <span>{link.name}</span>
                   </DropdownMenuItem>
