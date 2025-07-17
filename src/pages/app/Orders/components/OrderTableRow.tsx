@@ -35,7 +35,7 @@ export const OrderTableRow: React.FC<OrderTableRowProps> = ({ order }) => {
     <TableRow>
       <TableCell>
         <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button variant="outline" size="icon">
               <MoreHorizontal />
               <span className="sr-only">Order Details</span>

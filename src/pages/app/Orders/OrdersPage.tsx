@@ -56,14 +56,18 @@ export const OrdersPage: React.FC = () => {
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableHead className="w-12"></TableHead>
-                <TableHead className="hidden w-40 lg:table-cell">Id#</TableHead>
-                <TableHead className="w-30">Ordered at</TableHead>
-                <TableHead className="w-15 md:w-30">Status</TableHead>
-                <TableHead className="">Customer</TableHead>
-                <TableHead className="w-30">Order Total</TableHead>
-                <TableHead className="hidden w-12 md:table-cell lg:w-25"></TableHead>
-                <TableHead className="hidden w-12 md:table-cell lg:w-25"></TableHead>
+                <TableRow>
+                  <TableHead className="w-12"></TableHead>
+                  <TableHead className="hidden w-40 lg:table-cell">
+                    Id#
+                  </TableHead>
+                  <TableHead className="w-30">Ordered at</TableHead>
+                  <TableHead className="w-15 md:w-30">Status</TableHead>
+                  <TableHead className="">Customer</TableHead>
+                  <TableHead className="w-30">Order Total</TableHead>
+                  <TableHead className="hidden w-12 md:table-cell lg:w-25"></TableHead>
+                  <TableHead className="hidden w-12 md:table-cell lg:w-25"></TableHead>
+                </TableRow>
               </TableHeader>
               <TableBody>
                 {result
