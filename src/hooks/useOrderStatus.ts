@@ -13,7 +13,7 @@ import { GET_ORDERS_KEY, type GetOrdersResponse } from '@/api/get-orders'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Check, ShoppingBag, Truck } from 'lucide-react'
 import { toast } from 'sonner'
-interface UseCancelOrderProps {
+interface UseOrderStatusProps {
   orderId: string
   orderStatus?: OrderStatus
   callbackFn?: () => void
@@ -23,7 +23,7 @@ export function useOrderStatus({
   orderId,
   orderStatus,
   callbackFn,
-}: UseCancelOrderProps) {
+}: UseOrderStatusProps) {
   const queryClient = useQueryClient()
 
   function updateOrderStatusOnCache(newStatus: OrderStatus) {
