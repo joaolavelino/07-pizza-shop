@@ -3,16 +3,16 @@ import { DashboardPage } from './pages/app/Dashboard/DashboardPage'
 import { SignInPage } from './pages/auth/SignInPage'
 import { AppLayout } from './pages/_layout/AppLayout'
 import { AuthLayout } from './pages/_layout/AuthLayout'
-import { PageTitle } from './_util/pageTitle'
 import { SignUpPage } from './pages/auth/SignUpPage'
 import { OrdersPage } from './pages/app/Orders/OrdersPage'
 import { NotFoundPage } from './pages/404'
+import { ErrorPage } from './pages/ErrorPage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
-    errorElement: <NotFoundPage />,
+    errorElement: <ErrorPage />,
     children: [
       { path: '/', element: <DashboardPage /> },
       { path: '/orders', element: <OrdersPage /> },
@@ -24,12 +24,16 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/sign-in',
-        element: <SignInPage title={PageTitle('Sign in')} />,
+        element: <SignInPage />,
       },
       {
         path: '/sign-up',
         element: <SignUpPage />,
       },
     ],
+  },
+  {
+    path: '*', //any path not listed above
+    element: <NotFoundPage />,
   },
 ])

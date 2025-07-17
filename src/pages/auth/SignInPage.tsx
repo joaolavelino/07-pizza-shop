@@ -1,4 +1,4 @@
-import type { DefaultPageProps } from '@/_types/pagesTypes'
+import { PageTitle } from '@/_util/pageTitle'
 import { signIn } from '@/api/sign-in'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,15 +11,13 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-export interface SignInPageProps extends DefaultPageProps {}
-
 const signInSchema = z.object({
   email: z.string().email('Insert a valid e-mail address.'),
 })
 
 type signInFormType = z.infer<typeof signInSchema>
 
-export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
+export const SignInPage: React.FC = () => {
   const [searchParams] = useSearchParams()
 
   const {
@@ -59,7 +57,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({ title }) => {
   }
   return (
     <>
-      <title>{title}</title>
+      <title>{PageTitle('Sign-in')}</title>
       <div className="bg-muted rounded-sm border-1 p-6">
         <Button asChild variant="outline" className="absolute top-10 right-10">
           <Link to="/sign-up">Create an account</Link>
