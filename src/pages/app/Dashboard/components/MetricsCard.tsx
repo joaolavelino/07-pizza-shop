@@ -16,8 +16,17 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
   isLoading,
   ...props
 }) => {
-  const comparisonColour =
-    infoSecondary && infoSecondary > 0 ? 'text-emerald-500' : 'text-rose-600'
+  const comparisonColour = () => {
+    if (title.includes('Canceled')) {
+      return infoSecondary && infoSecondary < 0
+        ? 'text-emerald-500'
+        : 'text-rose-600'
+    } else {
+      return infoSecondary && infoSecondary > 0
+        ? 'text-emerald-500'
+        : 'text-rose-600'
+    }
+  }
 
   const comparisonSufix = title.includes('month')
     ? 'over last month'
@@ -41,7 +50,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
               {infoPrimary}
             </span>
             <p className="text-muted-foreground text-sm">
-              <span className={comparisonColour}>{infoSecondary}%</span>{' '}
+              <span className={comparisonColour()}>{infoSecondary}%</span>{' '}
               {comparisonSufix}
             </p>
           </>
