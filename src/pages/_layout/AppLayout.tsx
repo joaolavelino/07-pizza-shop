@@ -1,10 +1,24 @@
+import { authenticatorInterceptor } from '@/api/_auth-interceptor'
 import { Header } from '@/components/Header'
 import { Button } from '@/components/ui/button'
-import { Outlet } from 'react-router-dom'
+import { api } from '@/lib/axios'
+import { useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 export interface AppLayoutProps {}
 
 export const AppLayout: React.FC<AppLayoutProps> = () => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    //bring the authenticator function from a dedicated file (better practices for QA)
+    const interceptorId = authenticatorInterceptor(navigate)
+    //remove the event listener
+    return () => {
+      api.interceptors.response.eject(interceptorId)
+    }
+  }, [navigate])
+
   return (
     <div className="flex min-h-screen flex-col antialiased">
       <Header />
