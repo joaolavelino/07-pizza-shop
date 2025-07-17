@@ -870,6 +870,26 @@ queryClient.setQueryData(
 )
 ```
 
+### REMINDER: Information dependant query.
+
+If I want that the query to refetch everytime some parameter changes, I need to pass this variable parameter to the `queryKey` and React Router will simply monitor this and refetch if this parameter changes.
+Here's an example from the Pizza Shop App:
+
+```tsx
+const { data: dailyRevenueInCents } = useQuery({
+  queryKey: [GET_METRICS_DAILY_REVENUE, dateRange],
+  queryFn: () =>
+    getDailyRevenue({
+      from: dateRange?.from,
+      to: dateRange?.to,
+    }),
+})
+```
+
+In this case, dateRange is a range of dates that will be passed as params to the API call. If i select different dates, a different range will be passed to this query, triggering a refetch!
+Simple as that!
+_I wish everything were this simple_
+
 # React Hook Form - Contolled components
 
 Some form field components from UI libraries don't return the proper HTML Element, for instance, Radix's `<Select>` component.
