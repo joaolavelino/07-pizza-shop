@@ -1054,6 +1054,12 @@ Then, reference this file on the test object of the `vitest.config.js` configura
 test: { globals: true, setupFiles: ['./test/setup.ts'] },
 ```
 
+And include it on the list of folders on the `include` object on `tsconfig.app.json` in order to the DOM assertions to be recognized by typescript.
+
+```json
+"include": ["src", "test"]
+```
+
 ## Happy-dom basic setup
 
 The only setup needed to use Happy-dom with Vite is adding `environment: 'happy-dom'` on the test object, along with the `globals` and `setupFiles`:
@@ -1064,4 +1070,35 @@ test: {
     setupFiles: ['./test/setup.ts'],
     environment: 'happy-dom',
   }
+```
+
+## Creating the first test
+
+On a file with the component name and `.spec.tsx` extension we can now start our tests, here's an example from pizza shop:
+
+```tsx
+describe('Order status component', () => {
+  it('should display the right information based on the provided order status - canceled', () => {
+    //status canceled
+    const wrapper = render(<OrderStatus status="canceled" />)
+
+    // wrapper.debug() // this shows what's being rendered on the test
+
+    const statusText = wrapper.getByText('Canceled')
+    const statusIcon = wrapper.getByLabelText('status-icon')
+    //console.log(statusText.outerHTML) //this renders the HTML element that wraps the queried text
+    expect(statusText).toBeInTheDocument()
+    expect(statusIcon).toHaveClass('lucide-circle-x')
+    expect(statusIcon).toHaveClass('text-rose-500')
+  })
+  // test for other status...
+
+  it('should display the test on any display size when recieving the "full" prop', () => {
+    const wrapper = render(<OrderStatus status="canceled" full />)
+
+    const statusText = wrapper.getByText('Canceled')
+
+    expect(statusText).not.toHaveClass('hidden')
+  })
+})
 ```

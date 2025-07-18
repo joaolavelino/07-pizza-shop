@@ -61,8 +61,10 @@ export const OrderStatus: React.FC<OrderStatusProps> = ({
 
   return (
     <div className="flex items-center justify-center gap-2 md:justify-start">
-      <span className={`text-${color}`}>
-        {Icon && <Icon size={16} className={`${color}`} />}
+      <span>
+        {Icon && (
+          <Icon size={16} className={`${color}`} aria-label="status-icon" />
+        )}
       </span>
       <span
         className={`text-muted-foreground ${!full && 'hidden'} font-medium md:block`}
