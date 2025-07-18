@@ -1102,3 +1102,52 @@ describe('Order status component', () => {
   })
 })
 ```
+
+## Testing Events and function triggers with spies
+
+To test events, it's necessary to install another companion library from Testing Library `user-event`:
+
+```bash
+npm i -d @testing-library/user-event
+```
+
+This library allows us to simulate user events, like typing and clicking.
+Here's an example of this on the Pizza Shop App
+1 - Create a user
+2 - Create the user event
+
+```tsx
+import { render } from '@testing-library/react'
+import { Pagination } from './Pagination'
+import userEvent from '@testing-library/user-event'
+
+// created default data to all the tests, so they have standardized results based on these values
+const currentPageIndex = 2
+const entriesNumber = 50
+const entriesPerPage = 10
+const pages = Math.ceil(entriesNumber / entriesPerPage) || 1
+const lastPageIndex = pages - 1
+
+const onPageChangeCallback = vi.fn() //this is a spy function (vi refers to vitest)
+
+describe('Pagination component', () => {})
+it('should navigate to the next page ', async () => {
+  const wrapper = render(
+    <Pagination
+      entriesNumber={entriesNumber}
+      onPageChange={onPageChangeCallback}
+      pageIndex={currentPageIndex}
+      perPage={entriesPerPage}
+    />,
+  )
+
+  const nextPageButton = wrapper.getByRole('button', { name: 'Next page' })
+
+  // User Event Simulation
+  const user = userEvent.setup() //create the user
+  //simulate the click - this is a promise, so the function must be async
+  await user.click(nextPageButton) //simulate the action
+
+  expect(onPageChangeCallback).toBeCalledWith(currentPageIndex + 1)
+})
+```

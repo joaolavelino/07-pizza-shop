@@ -47,8 +47,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <span className="sr-only">Previous page</span>
           </Button>
           <div className="text-muted-foreground text-sm font-medium">
-            Page <strong className="text-foreground">{pageIndex + 1} </strong>of{' '}
-            {pages}
+            Page {pageIndex + 1} of {pages}
           </div>
           <Button
             variant={'outline'}
