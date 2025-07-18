@@ -14,14 +14,6 @@ type OrderStatus =
   | 'delivering'
   | 'delivered'
 
-// const orderStatusMap: Record<OrderStatus, string> = {
-//   canceled: 'Canceled',
-//   delivered: 'Delivered',
-//   delivering: 'Delivering',
-//   pending: 'Pending',
-//   processing: 'Processing',
-// }
-
 export interface OrderStatusProps {
   status: OrderStatus
   full?: boolean

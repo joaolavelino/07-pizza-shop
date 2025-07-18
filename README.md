@@ -936,3 +936,132 @@ The render property recieves an arrow function, and on it's arguments we can get
   )}
 />
 ```
+
+# Testes with Vitest +
+
+Vitest is the test framework powered by Vite. It's compatible with TS and Jest.
+
+## Install Vitest + Documentation
+
+```bash
+npm install -D vitest
+```
+
+Check the documentation [here](https://vitest.dev/)
+
+## Install Testing Library + Documentation
+
+Instead of just testing js/ts functions and it's returns, Testing Library enables us to test components that have rendered elements on the DOM. It has semantic query tools for us to get the exact elements we want to perform the tests on.
+
+```bash
+npm install --save-dev @testing-library/react @testing-library/dom
+```
+
+Check the documentation [here](https://testing-library.com/docs/react-testing-library/intro)
+
+## Install Jest-dom
+
+`jest-dom` is a companion library for Testing Library that provides custom DOM element matchers for Jest.
+Basically it allows us to make assertion on HTML elements, rendered on the DOM, its presence or not, and its properties, like: disabled, invalid, required, focus, etc.
+
+```bash
+npm install --save-dev @testing-library/jest-dom
+```
+
+Check the documentation [here](https://github.com/testing-library/jest-dom/)
+
+## Install `happy-dom` + Documentation
+
+`happy-dom` is a reimplementation of `jsdom`, which is a javascript DOM simulator that allows us to run all the unitary tests without running a virtual browser. It doesn't have any visual output, but reather just simulates what happens on the browser.
+
+```bash
+npm install -D happy-dom
+```
+
+Check the documentation [here](https://github.com/capricorn86/happy-dom/wiki/Getting-started)
+
+## Vitest Basic Setup
+
+On your `package.JSON` file, add the test script to run the tests:
+
+```json
+"scripts": {
+    //all the other scripts
+    "test": "vitest"
+  },
+```
+
+Create a `vitest.config.ts` file and add the following:
+
+```ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    globals: true,
+  },
+})
+```
+
+[Documentation](https://vitest.dev/config/#globals)
+
+It's also possible to use the `vite.config.ts` file, but it needs a few changes because of typescript errors.
+(The original config object type can't get a `test` key).
+
+```ts
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+import { defineConfig } from 'vite'
+import type { UserConfig } from 'vite' //add this
+import type { InlineConfig } from 'vitest/node' //add this
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  test: { globals: true }, //add this
+} as UserConfig & {. //add this
+  test: InlineConfig //add this
+})
+```
+
+on `tsconfig.json` and `tsconfig.app.json` add the globals typing on the `compilerOptions`: object
+
+```json
+{
+  "compilerOptions": {
+    "types": ["vitest/globals"] //add this
+  }
+}
+```
+
+## Jest-dom basic setup
+
+Create a tests setup file on the root of the project (outside the `src` folder): `/test/setup`. There just import the jest-dom.
+
+```ts
+import '@testing-library/jest-dom/vitest'
+```
+
+Then, reference this file on the test object of the `vitest.config.js` configuration file, or the `vite.config.js` if you decided to use the same configuration file:
+
+```ts
+test: { globals: true, setupFiles: ['./test/setup.ts'] },
+```
+
+## Happy-dom basic setup
+
+The only setup needed to use Happy-dom with Vite is adding `environment: 'happy-dom'` on the test object, along with the `globals` and `setupFiles`:
+
+```ts
+test: {
+    globals: true,
+    setupFiles: ['./test/setup.ts'],
+    environment: 'happy-dom',
+  }
+```

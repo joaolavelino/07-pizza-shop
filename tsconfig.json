@@ -10,6 +10,7 @@
       "@/*": ["./src/*"]
     },
     "noImplicitAny": false, // This allows implicit 'any' types
-    "skipLibCheck": true // Skips type checking of declaration files
+    "skipLibCheck": true, // Skips type checking of declaration files
+    "types": ["vitest/globals"]
   }
 }
