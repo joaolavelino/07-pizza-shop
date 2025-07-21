@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter, useLocation } from 'react-router-dom'
-import { OrderTableFilter } from './OrderTableFilter'
+import { renderWithProviders } from '@/_util/renderWithProviders'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useLocation } from 'react-router-dom'
+import { OrderTableFilter } from './OrderTableFilter'
 
 function LocationDisplay() {
   const location = useLocation()
@@ -10,12 +11,15 @@ function LocationDisplay() {
 
 describe('OrderTableFilter component', () => {
   it('should add search parameters on the url', async () => {
-    render(
-      <MemoryRouter initialEntries={['/orders']}>
-        <OrderTableFilter />
-        <LocationDisplay />
-      </MemoryRouter>,
-    )
+    renderWithProviders({
+      ui: (
+        <>
+          <OrderTableFilter />
+          <LocationDisplay />
+        </>
+      ),
+      path: '/orders',
+    })
 
     const submitButton = screen.getByRole('button', { name: /filter results/i })
     const orderIdInput = screen.getByLabelText('Order Id')
@@ -49,14 +53,15 @@ describe('OrderTableFilter component', () => {
     })
   })
   it('should clear the search params with clear button', async () => {
-    render(
-      <MemoryRouter
-        initialEntries={['/orders?orderId=abc&page=1&customerName=person+name']}
-      >
-        <OrderTableFilter />
-        <LocationDisplay />
-      </MemoryRouter>,
-    )
+    renderWithProviders({
+      ui: (
+        <>
+          <OrderTableFilter />
+          <LocationDisplay />
+        </>
+      ),
+      path: '/orders?orderId=abc&page=1&customerName=Person+Name&status=delivered',
+    })
     const clearButton = screen.getByRole('button', { name: /reset filters/i })
 
     const user = userEvent.setup() //create the user
@@ -72,16 +77,10 @@ describe('OrderTableFilter component', () => {
     })
   })
   it('should render the search params if present', async () => {
-    render(
-      <MemoryRouter
-        initialEntries={[
-          '/orders?orderId=abc&page=1&customerName=Person+Name&status=delivered',
-        ]}
-      >
-        <OrderTableFilter />
-        <LocationDisplay />
-      </MemoryRouter>,
-    )
+    renderWithProviders({
+      ui: <OrderTableFilter />,
+      path: '/orders?orderId=abc&page=1&customerName=Person+Name&status=delivered',
+    })
     const orderIdInput = screen.getByLabelText('Order Id') as HTMLInputElement
     const customerNameInput = screen.getByLabelText(
       'Customer Name',
