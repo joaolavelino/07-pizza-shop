@@ -1209,11 +1209,45 @@ In this test, it's possible to render two NavLinks inside the render function, a
 It's possible also to isolate this render structure with the wrapper, to be used in multiple iterations:
 
 ```tsx
-function renderWithRouter(ui: ReactElement, { route = '/about' } = {}) {
-  return render(ui, {
-    wrapper: ({ children }) => (
-      <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
-    ),
+import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
+import { render, type RenderOptions } from '@testing-library/react'
+import type { ReactNode } from 'react'
+import { createTestQueryClient } from '../../test/testQueryClient'
+import { MemoryRouter } from 'react-router-dom'
+
+interface RenderWithProvidersOptions extends RenderOptions {
+  ui: ReactNode
+  path?: string
+  queryClient?: QueryClient
+}
+
+const testQueryClient = createTestQueryClient()
+
+export function renderWithProviders({
+  ui,
+  path = '*',
+  queryClient = testQueryClient,
+}: RenderWithProvidersOptions) {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    </MemoryRouter>,
+  )
+}
+```
+
+i also isolated the Query Client Creation:
+
+```ts
+import { QueryClient } from '@tanstack/react-query'
+
+export function createTestQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false, // disable retry for tests
+      },
+    },
   })
 }
 ```
@@ -1244,12 +1278,15 @@ render(
 )
 ```
 
-### Testing Radix Select Component
-
-There is a problem on testing radix's select component, this can be solved adding this to the test setup file.
+And we can render multiple providers, just like on a normal app component:
 
 ```tsx
-Object.defineProperty(HTMLElement.prototype, 'hasPointerCapture', {
-  value: () => false,
-})
+<MemoryRouter initialEntries={['/sign-in?email=johndoe@example.com']}>
+        <QueryClientProvider client={queryClient}>
+          <SignInPage />
+        </QueryClientProvider>
+      </MemoryRouter>,
+    )
 ```
+
+In this case, the component use query hooks, so it need to be rendered on
