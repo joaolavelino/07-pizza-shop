@@ -1151,3 +1151,17 @@ it('should navigate to the next page ', async () => {
   expect(onPageChangeCallback).toBeCalledWith(currentPageIndex + 1)
 })
 ```
+
+### Clear the mock function status.
+
+If the mock function is called in multiple testes, the `toBeCalled` status can be carried from test to test, resulting in false positives.
+To avoid this, we need to clear this status with the function `mockClear` from the function mockup **before each** test:
+
+```tsx
+describe('Pagination component', () => {
+  beforeEach(() => {
+    onPageChangeCallback.mockClear()
+  })
+  // all test cases
+})
+```

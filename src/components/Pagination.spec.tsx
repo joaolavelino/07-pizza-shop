@@ -10,6 +10,9 @@ const lastPageIndex = pages - 1
 const onPageChangeCallback = vi.fn() //this is a spy function (vi refers to vitest)
 
 describe('Pagination component', () => {
+  beforeEach(() => {
+    onPageChangeCallback.mockClear()
+  })
   it('should display the correct number of pages, correct page number and entries ', async () => {
     const wrapper = render(
       <Pagination
@@ -86,7 +89,7 @@ describe('Pagination component', () => {
     //simulate the click - this is a promise, so the function must be async
     await user.click(firstPageButton) //simulate the action
 
-    expect(onPageChangeCallback).toBeCalledWith(1)
+    expect(onPageChangeCallback).toBeCalledWith(0)
   })
   it('should navigate to the last page ', async () => {
     const wrapper = render(
