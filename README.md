@@ -1165,3 +1165,91 @@ describe('Pagination component', () => {
   // all test cases
 })
 ```
+
+## Router related tests
+
+Doing tests with components that are related to routing, the DOM simultaion will not be able to handle many operations related to the routing. This is mainly because we don't have a proper Browser running our tests, therefore there is no URL, for instance.
+
+React Router Dom a tool to deal with this, called `MemoryRouter`. This is a simulation of a Router Provider, that, as the name suggests, runs on the memory. There we can set browsing related information, like the URL. It also allow us to render components that use hooks that depends on the Router Provider, like `useLocation`.
+
+React Testing Library allow us to use a component envolving the rendered component, passing a wrapper component, on the second argument of the `render()` function, as shown below.
+
+Here's an example of a test using it:
+
+```tsx
+import { render } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { NavigationLink } from './NavLink'
+
+describe('NavLink component', () => {
+  it('should highlight nav link when its target is the curent page', async () => {
+    const wrapper = render(
+      <NavigationLink to={'/about'}>About</NavigationLink>,
+      {
+        wrapper: ({ children }) => {
+          return (
+            <MemoryRouter initialEntries={['/about']}>{children}</MemoryRouter>
+          )
+        },
+      },
+    )
+
+    wrapper.debug()
+  })
+})
+```
+
+The argument `initialEntries` sets the parameter of this router. The first argument is the current path.
+
+Running the `debug` function, we can see on the render tree on the terminal, all the information about this component.
+In this case, because the current path, set on `initialEntries` is the same of the component's target path, the `data-current` parameter of the anchor is true. If we change the current path on the `MemoryRouter`, this parameter will be false.
+
+In this test, it's possible to render two NavLinks inside the render function, and assess the `data-current` on both cases.
+
+It's possible also to isolate this render structure with the wrapper, to be used in multiple iterations:
+
+```tsx
+function renderWithRouter(ui: ReactElement, { route = '/about' } = {}) {
+  return render(ui, {
+    wrapper: ({ children }) => (
+      <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
+    ),
+  })
+}
+```
+
+It's also possible to render all these elements inline, without using the wrapper option on the second argument of the render function:
+
+```tsx
+render(
+  <MemoryRouter initialEntries={['/orders']}>
+    <OrderTableFilter />
+  </MemoryRouter>,
+)
+```
+
+If I want to track the url, in case of search params, it's possible to create a mock component to run alongside the tested one, that will only render the path returned by `useLocation` (that can run, when it's inside the Memory Router):
+
+```tsx
+function LocationDisplay() {
+  const location = useLocation()
+  return <div data-testid="location-display">Location:{location.search}</div>
+}
+/// Inside the test case:
+render(
+  <MemoryRouter initialEntries={['/orders']}>
+    <OrderTableFilter />
+    <LocationDisplay />
+  </MemoryRouter>,
+)
+```
+
+### Testing Radix Select Component
+
+There is a problem on testing radix's select component, this can be solved adding this to the test setup file.
+
+```tsx
+Object.defineProperty(HTMLElement.prototype, 'hasPointerCapture', {
+  value: () => false,
+})
+```

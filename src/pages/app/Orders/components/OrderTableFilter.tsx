@@ -84,11 +84,13 @@ export const OrderTableFilter: React.FC<OrderTableFilterProps> = () => {
           {...register('orderId')}
           placeholder="Order Id#"
           className="md:w-[180px]"
+          aria-label="Order Id"
         />
         <Input
           {...register('customerName')}
           placeholder="Customer name"
           className="flex-1"
+          aria-label="Customer Name"
         />
 
         <div className="flex gap-2">
@@ -102,6 +104,7 @@ export const OrderTableFilter: React.FC<OrderTableFilterProps> = () => {
                 onValueChange={onChange}
                 value={value}
                 disabled={disabled}
+                aria-label="Order Status"
               >
                 <SelectTrigger className="flex-1 md:w-[140px]">
                   <SelectValue className="" />
@@ -117,7 +120,7 @@ export const OrderTableFilter: React.FC<OrderTableFilterProps> = () => {
               </Select>
             )}
           />
-          <Button type="submit" variant={'secondary'}>
+          <Button type="submit" variant={'secondary'} aria-label="">
             <Filter />
             <span className="sr-only lg:not-sr-only">Filter results</span>
           </Button>
