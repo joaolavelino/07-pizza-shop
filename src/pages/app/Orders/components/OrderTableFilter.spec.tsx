@@ -1,24 +1,14 @@
 import { renderWithProviders } from '@/_util/renderWithProviders'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useLocation } from 'react-router-dom'
 import { OrderTableFilter } from './OrderTableFilter'
-
-function LocationDisplay() {
-  const location = useLocation()
-  return <div data-testid="location-display">Location:{location.search}</div>
-}
 
 describe('OrderTableFilter component', () => {
   it('should add search parameters on the url', async () => {
     renderWithProviders({
-      ui: (
-        <>
-          <OrderTableFilter />
-          <LocationDisplay />
-        </>
-      ),
+      ui: <OrderTableFilter />,
       path: '/orders',
+      locationDisplay: true,
     })
 
     const submitButton = screen.getByRole('button', { name: /filter results/i })
@@ -54,13 +44,9 @@ describe('OrderTableFilter component', () => {
   })
   it('should clear the search params with clear button', async () => {
     renderWithProviders({
-      ui: (
-        <>
-          <OrderTableFilter />
-          <LocationDisplay />
-        </>
-      ),
+      ui: <OrderTableFilter />,
       path: '/orders?orderId=abc&page=1&customerName=Person+Name&status=delivered',
+      locationDisplay: true,
     })
     const clearButton = screen.getByRole('button', { name: /reset filters/i })
 
