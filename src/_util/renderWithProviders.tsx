@@ -8,7 +8,7 @@ interface RenderWithProvidersOptions extends RenderOptions {
   ui: ReactNode
   path?: string
   queryClient?: QueryClient
-  locationDisplay?: boolean
+  showLocationDisplay?: boolean
 }
 
 const testQueryClient = createTestQueryClient()
@@ -22,13 +22,13 @@ export function renderWithProviders({
   ui,
   path = '*',
   queryClient = testQueryClient,
-  locationDisplay = false,
+  showLocationDisplay = false,
 }: RenderWithProvidersOptions) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <QueryClientProvider client={queryClient}>
         {ui}
-        {locationDisplay && <LocationDisplay />}
+        {showLocationDisplay && <LocationDisplay />}
       </QueryClientProvider>
     </MemoryRouter>,
   )

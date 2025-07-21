@@ -8,7 +8,7 @@ describe('OrderTableFilter component', () => {
     renderWithProviders({
       ui: <OrderTableFilter />,
       path: '/orders',
-      locationDisplay: true,
+      showLocationDisplay: true,
     })
 
     const submitButton = screen.getByRole('button', { name: /filter results/i })
@@ -46,7 +46,7 @@ describe('OrderTableFilter component', () => {
     renderWithProviders({
       ui: <OrderTableFilter />,
       path: '/orders?orderId=abc&page=1&customerName=Person+Name&status=delivered',
-      locationDisplay: true,
+      showLocationDisplay: true,
     })
     const clearButton = screen.getByRole('button', { name: /reset filters/i })
 
