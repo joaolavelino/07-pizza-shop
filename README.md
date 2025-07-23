@@ -1206,52 +1206,6 @@ In this case, because the current path, set on `initialEntries` is the same of t
 
 In this test, it's possible to render two NavLinks inside the render function, and assess the `data-current` on both cases.
 
-It's possible also to isolate this render structure with the wrapper, to be used in multiple iterations:
-
-```tsx
-import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
-import { render, type RenderOptions } from '@testing-library/react'
-import type { ReactNode } from 'react'
-import { createTestQueryClient } from '../../test/testQueryClient'
-import { MemoryRouter } from 'react-router-dom'
-
-interface RenderWithProvidersOptions extends RenderOptions {
-  ui: ReactNode
-  path?: string
-  queryClient?: QueryClient
-}
-
-const testQueryClient = createTestQueryClient()
-
-export function renderWithProviders({
-  ui,
-  path = '*',
-  queryClient = testQueryClient,
-}: RenderWithProvidersOptions) {
-  return render(
-    <MemoryRouter initialEntries={[path]}>
-      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
-    </MemoryRouter>,
-  )
-}
-```
-
-i also isolated the Query Client Creation:
-
-```ts
-import { QueryClient } from '@tanstack/react-query'
-
-export function createTestQueryClient() {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false, // disable retry for tests
-      },
-    },
-  })
-}
-```
-
 It's also possible to render all these elements inline, without using the wrapper option on the second argument of the render function:
 
 ```tsx
@@ -1289,4 +1243,229 @@ And we can render multiple providers, just like on a normal app component:
     )
 ```
 
-In this case, the component use query hooks, so it need to be rendered on
+In this case, the component use query hooks, so it need to be rendered on.
+
+## Render Helper
+
+To wrap it up, it's possible also to isolate this render structure with the wrapper, to be used in multiple iterations:
+
+```tsx
+import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
+import { render, type RenderOptions } from '@testing-library/react'
+import type { ReactNode } from 'react'
+import { createTestQueryClient } from '../../test/testQueryClient'
+import { MemoryRouter, useLocation } from 'react-router-dom'
+
+interface RenderWithProvidersOptions extends RenderOptions {
+  ui: ReactNode
+  path?: string
+  queryClient?: QueryClient
+  showLocationDisplay?: boolean
+}
+
+const testQueryClient = createTestQueryClient()
+
+function LocationDisplay() {
+  const location = useLocation()
+  return <div data-testid="location-display">{location.search}</div>
+}
+
+export function renderWithProviders({
+  ui,
+  path = '*',
+  queryClient = testQueryClient,
+  showLocationDisplay = false,
+}: RenderWithProvidersOptions) {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <QueryClientProvider client={queryClient}>
+        {ui}
+        {showLocationDisplay && <LocationDisplay />}
+      </QueryClientProvider>
+    </MemoryRouter>,
+  )
+}
+```
+
+i also isolated the Query Client Creation:
+
+```ts
+import { QueryClient } from '@tanstack/react-query'
+
+export function createTestQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false, // disable retry for tests
+      },
+    },
+  })
+}
+```
+
+# MSW - Mock Service Worker
+
+It's a API mocking library that allows you to write client-agnostic mocks and reuse them across any frameworks, tools and environments.
+
+Make a Mock API allows us not only to test our API integration, but also have the possibility to run our front-end application without running the back-end **on a development environment**. Sometimes we only need to add a local feature that doesn't require API calls, or even only make simple UI changes. With the mock API, this can be done without the need of run all these services.
+
+[Check the docs here](https://mswjs.io/docs/quick-start)
+
+```bash
+npm i msw --save-dev
+```
+
+Start MSW and adding the public directory:
+
+```bash
+npx msw init public/ --save
+```
+
+## 1 - Create the Worker
+
+On the `api/` folder, create an `index.ts` file that will have the start function for the Worker. It's boilerplate, so just copy from here.
+
+```ts
+import { setupWorker } from 'msw/browser'
+
+export const worker = setupWorker()
+
+export async function enableMSW() {
+  await worker.start() /// after this, all the requests will be intercepted by MSW
+}
+```
+
+on `package.json`, create a script that will start our application on a separate environment (in this case, a test environment)
+
+```json
+  "scripts":{
+    "dev:test":"vite --port 9283 --mode test"
+    //this means, run the project on the port 9283 (it can be any number - not used of course), on a test environment.
+  }
+```
+
+On the `env.ts` file on the `src` folder, add the `MODE` environment variable to our `envSchema`:
+
+```ts
+const envSchema = z.object({
+  MODE: z.enum(['production', 'development', 'test']),
+  // other env
+})
+```
+
+With this environment variable, I can create a condition on the start function from MSW:
+
+```ts
+import { env } from '@/env'
+import { setupWorker } from 'msw/browser'
+
+export const worker = setupWorker()
+
+export async function enableMSW() {
+  if (env.MODE !== 'test') return //will not start if the app is running on other environments than test
+  await worker.start()
+}
+```
+
+To wrap it up, on the `main.tsx` file (the one that runs React), run the `enableMSW` before running React.
+
+```tsx
+enableMSW().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
+})
+```
+
+Remember that `enableMSW`:
+
+- is async, so `.then` will wait it's promise to be resolved;
+- will only start the MSW worker if the app is running on the `test` environment;
+
+**Run the application with the created script**
+
+```bash
+npm run dev:test
+```
+
+### Set the environment variables to the test environment
+
+On the environment variables file `env.local` we have the variables to run this project on a local environment. For instance, the API `VITE_API_URL` variable points to the localhost. On the test environment, we need to point the API calls elsewhere.
+
+1- Create a test environment variables file `.env.test` to name our test environment variables:
+
+```ts
+VITE_API_URL = '/' //this will point all the request to our main URL, not to the API
+VITE_ENABLE_API_DELAY = false // I don't want any delay out of the development environment (it's only necessary for us to test the loading states of the UI)
+```
+
+## Create our first mock
+
+On `/api/MSW/` create the a `.ts` file of the mock. In this example, it's Pizza Shop's sign-in:
+
+```ts
+import { http, HttpResponse } from 'msw'
+
+export const signInMock = http.post('/authenticate', () => {
+  //we create a mock POST request to /authenticate
+  return new HttpResponse(null, { status: 401 }) //send back the response with no body (null) and the status
+})
+```
+
+Add this `signInMock` mock to my handlers on the `index.ts` file on the MSW folder:
+
+```ts
+export const worker = setupWorker(signInMock)
+```
+
+**remove the `.url` from the `envSchema`**, as we're not sending an url on the test environment:
+
+```tsx
+const envSchema = z.object({
+  MODE: z.enum(['production', 'development', 'test']),
+  VITE_API_URL: z.string().//url(), //remove the URL because of the tests
+  VITE_ENABLE_API_DELAY: z.string().transform((value) => value === 'true'),
+  //if value is equals true, it will return true
+})
+```
+
+If we test our login, it's going to work, and always return a `status:401` response with no response body.
+But we can simulate a positive response.
+
+- Get the `email` from the request body;
+- return a status 200
+- and set an auth cookie (kind of what the backend does when it sends the magic link: access and set the auth cookie)
+
+This is the final mock:
+
+```ts
+import { http, HttpResponse } from 'msw'
+import type { SignInBody } from '../sign-in'
+
+export const signInMock = http.post<never, SignInBody>(
+  '/authenticate',
+  async ({ request }) => {
+    const { email } = await request.json()
+    if (email === 'johndoe@example.com') {
+      return new HttpResponse(null, {
+        status: 200,
+        headers: {
+          'Set-Cookie': 'auth=sample-jwt',
+        },
+      })
+    }
+    return new HttpResponse(null, { status: 401 })
+  },
+)
+```
+
+Notes:
+
+- The typing generics `<never, SignInBody>` stand for:
+  - **Parameters type**: `never`: It's never going to be params to this request
+  - **Request Body type**: We just imported the interface of the actual API request (in this case is the `email:string`)
+  - The third item can be the **Response Body type**, that surely will be present on other requests (on this one the response body is null)
+
+With this final mock, if try to make a sign-in with the `johndoe@example`, the request will return a `status:200`. We can check all the details on the network tab and the UI will respond accordingly (toarts, alerts, etc.)
