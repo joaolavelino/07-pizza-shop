@@ -1467,5 +1467,9 @@ Notes:
   - **Parameters type**: `never`: It's never going to be params to this request
   - **Request Body type**: We just imported the interface of the actual API request (in this case is the `email:string`)
   - The third item can be the **Response Body type**, that surely will be present on other requests (on this one the response body is null)
+- It's important to mock success and failure outcomes so we can test if the UI is responding well on both scenarios.
+
+Check this MDN documentation to know how to handle the HTTP response status.
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status
 
 With this final mock, if try to make a sign-in with the `johndoe@example`, the request will return a `status:200`. We can check all the details on the network tab and the UI will respond accordingly (toarts, alerts, etc.)

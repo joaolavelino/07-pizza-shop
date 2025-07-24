@@ -1,4 +1,4 @@
-import type { getPopularProductsProps } from '@/api/get-metrics-popular-products'
+import type { getPopularProductsResponse } from '@/api/get-metrics-popular-products'
 import {
   Card,
   CardContent,
@@ -18,7 +18,7 @@ import {
 import { Star } from 'lucide-react'
 
 export interface PopularProductsChartProps {
-  data: getPopularProductsProps | undefined
+  data: getPopularProductsResponse | undefined
 }
 
 // export const data = [

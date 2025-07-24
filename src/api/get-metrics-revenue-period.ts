@@ -5,7 +5,7 @@ export type getDailyRevenueResponse = {
   receipt: number
 }[]
 
-interface getDailyRevenueProps {
+export interface getDailyRevenueProps {
   from?: Date
   to?: Date
 }

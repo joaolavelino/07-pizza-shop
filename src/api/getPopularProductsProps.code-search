@@ -1,0 +1,21 @@
+# Query: getPopularProductsProps
+# ContextLines: 1
+
+4 results - 2 files
+
+src/api/get-metrics-popular-products.ts:
+  2  
+  3: export type getPopularProductsResponse = {
+  4    product: string | null
+
+  8  export async function getPopularProducts() {
+  9:   const response = await api.get<getPopularProductsResponse>(
+  10      '/metrics/popular-products',
+
+src/pages/app/Dashboard/components/PopularProductsChart.tsx:
+   1: import type { getPopularProductsResponse } from '@/api/get-metrics-popular-products'
+   2  import {
+
+  20  export interface PopularProductsChartProps {
+  21:   data: getPopularProductsResponse | undefined
+  22  }
