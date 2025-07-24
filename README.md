@@ -1473,3 +1473,34 @@ Check this MDN documentation to know how to handle the HTTP response status.
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status
 
 With this final mock, if try to make a sign-in with the `johndoe@example`, the request will return a `status:200`. We can check all the details on the network tab and the UI will respond accordingly (toarts, alerts, etc.)
+
+## Nock with data on response
+
+```ts
+import { http, HttpResponse } from 'msw'
+import type { getProfileResponse } from '../get-profile'
+
+export const getProfileMock = http.get<never, never, getProfileResponse>(
+  '/me',
+  async () => {
+    return HttpResponse.json(
+      {
+        id: 'mock-id-string',
+        name: 'Mock Name',
+        email: 'mock@mail.com',
+        phone: '1234567890',
+        role: 'manager',
+        createdAt: new Date(),
+        updatedAt: null,
+      },
+      { status: 200 },
+    )
+  },
+)
+```
+
+Notes:
+
+- On the response, we don't use `new` before `HttpResponse`. In this case, we're just using a helper function, not creating a new object by it's class.
+  **when returning using `new`, DON'T FORGET THE `null` RESPONSE BEFORE THE STATUS**
+- Again the response typing is on the third position of the generics

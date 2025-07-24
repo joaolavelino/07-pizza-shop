@@ -1,7 +1,7 @@
 import type { OrderDetails } from '@/_types/ordersTypes'
 import { api } from '@/lib/axios'
 
-interface GetOrderDetailsParams {
+export interface GetOrderDetailsParams {
   orderId: string
 }
 
