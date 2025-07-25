@@ -1504,3 +1504,70 @@ Notes:
 - On the response, we don't use `new` before `HttpResponse`. In this case, we're just using a helper function, not creating a new object by it's class.
   **when returning using `new`, DON'T FORGET THE `null` RESPONSE BEFORE THE STATUS**
 - Again the response typing is on the third position of the generics
+
+# End-2-End tests with PlayWright
+
+End-to-End tests simulate real user interactions with the application in a production-like environment. They validate that the system works as a whole — including frontend, backend, APIs, authentication, and integrations — and ensure that critical user flows function correctly from start to finish.
+
+🎯 Purpose
+
+- Verify that all parts of the system work together as expected
+- Catch regressions in full **workflows** (e.g., sign in, create item, view dashboard)
+- Provide confidence for production releases
+
+  🧱 What E2E Tests Cover
+
+- User interface behavior and visual feedback
+- Backend request handling and data flow
+- External services (mocked or stubbed)
+- Error states and edge cases
+
+🛠️ Tools Used
+(Adapt this section to your stack)
+
+- **Playwright** for browser automation and UI interaction
+- **MSW** to mock Mock servers on test environments
+
+Check MSW Documentation on how to set up and create the api mocks
+
+## Installation and Documentation
+
+```bash
+npm init playwright@latest
+```
+
+[Documentation](https://playwright.dev/docs/intro)
+
+## Initial Setup
+
+1 - On the `playwright.config.ts` file, there are some settings. On `projects` there os a list of all the available browsers.
+During the initial setup and as we create the first tests, this entire section can be left commented and PlayWright will use a default browser. As we start actually using these browsers, we just need to uncomment.
+
+Uncomment the `webServer` section, this are the configurations for local server testing, that we're going to initially use.
+
+we can also Comment (or delete) the following options on the file:
+
+- `reporter`: we're going to see the reports on the terminal, no need to create an HTML for it
+- `use.trace`: same reason
+
+**Other setup options**
+
+- `use.baseUrl`: UNCOMMENT - this is where the tests are running. We can use the same port as the test environment.
+- `webServer.command`: The command to run the test environment: `npm run dev:test`
+- `reuseExistingServer`: is going to be used only on CI environment. Here we are going to use the already running test server.
+
+_If we want to use any custom extension othen than `.spec.ts` (for instance: `.e2e-spec.ts` to separate the end-2-end tests), it's necessary to add a config line to the file:_
+
+```ts
+testMatch: /.*\.e2e-spec\.ts$/ // Regex that means any file with extension .e2e-spec.ts
+```
+
+To run PlayWright, run on the terminal:
+
+```bash
+npx playwright test --ui
+```
+
+_use the `--ui` flag will open PlayWright's User Interface (if not, all the reports are going to appear on the terminal)_
+
+## First E2E test

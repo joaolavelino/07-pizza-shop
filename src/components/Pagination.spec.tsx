@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Pagination } from './Pagination'
 import userEvent from '@testing-library/user-event'
 
@@ -14,7 +14,7 @@ describe('Pagination component', () => {
     onPageChangeCallback.mockClear()
   })
   it('should display the correct number of pages, correct page number and entries ', async () => {
-    const wrapper = render(
+    render(
       <Pagination
         entriesNumber={entriesNumber}
         onPageChange={onPageChangeCallback}
@@ -23,15 +23,15 @@ describe('Pagination component', () => {
       />,
     )
 
-    const entriesAmount = wrapper.getByText(`Total of ${entriesNumber} items`)
-    const pageNumber = wrapper.getByText(
+    const entriesAmount = screen.getByText(`Total of ${entriesNumber} items`)
+    const pageNumber = screen.getByText(
       `Page ${currentPageIndex + 1} of ${pages}`,
     ) //page 3 because page index starts on zero
     expect(entriesAmount).toBeInTheDocument()
     expect(pageNumber).toBeInTheDocument()
   })
   it('should navigate to the next page ', async () => {
-    const wrapper = render(
+    render(
       <Pagination
         entriesNumber={entriesNumber}
         onPageChange={onPageChangeCallback}
@@ -40,7 +40,7 @@ describe('Pagination component', () => {
       />,
     )
 
-    const nextPageButton = wrapper.getByRole('button', { name: 'Next page' })
+    const nextPageButton = screen.getByRole('button', { name: 'Next page' })
 
     // User Event Simulation
     const user = userEvent.setup() //create the user
@@ -50,7 +50,7 @@ describe('Pagination component', () => {
     expect(onPageChangeCallback).toBeCalledWith(currentPageIndex + 1)
   })
   it('should navigate to the previous page ', async () => {
-    const wrapper = render(
+    render(
       <Pagination
         entriesNumber={entriesNumber}
         onPageChange={onPageChangeCallback}
@@ -59,7 +59,7 @@ describe('Pagination component', () => {
       />,
     )
 
-    const previousPageButton = wrapper.getByRole('button', {
+    const previousPageButton = screen.getByRole('button', {
       name: 'Previous page',
     })
 
@@ -71,7 +71,7 @@ describe('Pagination component', () => {
     expect(onPageChangeCallback).toBeCalledWith(currentPageIndex - 1)
   })
   it('should navigate to the first page ', async () => {
-    const wrapper = render(
+    render(
       <Pagination
         entriesNumber={entriesNumber}
         onPageChange={onPageChangeCallback}
@@ -80,7 +80,7 @@ describe('Pagination component', () => {
       />,
     )
 
-    const firstPageButton = wrapper.getByRole('button', {
+    const firstPageButton = screen.getByRole('button', {
       name: 'Back to the first page',
     })
 
@@ -92,7 +92,7 @@ describe('Pagination component', () => {
     expect(onPageChangeCallback).toBeCalledWith(0)
   })
   it('should navigate to the last page ', async () => {
-    const wrapper = render(
+    render(
       <Pagination
         entriesNumber={entriesNumber}
         onPageChange={onPageChangeCallback}
@@ -101,7 +101,7 @@ describe('Pagination component', () => {
       />,
     )
 
-    const lastPageButton = wrapper.getByRole('button', {
+    const lastPageButton = screen.getByRole('button', {
       name: 'Last page',
     })
 
@@ -113,7 +113,7 @@ describe('Pagination component', () => {
     expect(onPageChangeCallback).toBeCalledWith(lastPageIndex)
   })
   it('should disable next and last page buttons on the last page ', () => {
-    const wrapper = render(
+    render(
       <Pagination
         entriesNumber={entriesNumber}
         onPageChange={onPageChangeCallback}
@@ -122,16 +122,16 @@ describe('Pagination component', () => {
       />,
     )
 
-    const lastPageButton = wrapper.getByRole('button', {
+    const lastPageButton = screen.getByRole('button', {
       name: 'Last page',
     })
-    const nextPageButton = wrapper.getByRole('button', { name: 'Next page' })
+    const nextPageButton = screen.getByRole('button', { name: 'Next page' })
 
     expect(lastPageButton).toHaveAttribute('disabled')
     expect(nextPageButton).toHaveAttribute('disabled')
   })
   it('should disable next and last page buttons on the last page ', () => {
-    const wrapper = render(
+    render(
       <Pagination
         entriesNumber={entriesNumber}
         onPageChange={onPageChangeCallback}
@@ -140,10 +140,10 @@ describe('Pagination component', () => {
       />,
     )
 
-    const firstPageButton = wrapper.getByRole('button', {
+    const firstPageButton = screen.getByRole('button', {
       name: 'Back to the first page',
     })
-    const previousPageButton = wrapper.getByRole('button', {
+    const previousPageButton = screen.getByRole('button', {
       name: 'Previous page',
     })
 

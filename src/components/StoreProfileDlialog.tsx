@@ -92,7 +92,9 @@ export const StoreProfileDialog: React.FC<StoreProfileDialogProps> = ({
           [MANAGED_RESTAURANT_KEY],
           context?.previousCachedData,
         )
-        toast.error(error.name, { description: `${error.message} Try again` })
+        toast.error('Update failed', {
+          description: `There was an error by updating. Try again`,
+        })
       },
     })
 

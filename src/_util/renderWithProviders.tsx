@@ -20,7 +20,7 @@ function LocationDisplay() {
 
 export function renderWithProviders({
   ui,
-  path = '*',
+  path = '/',
   queryClient = testQueryClient,
   showLocationDisplay = false,
 }: RenderWithProvidersOptions) {
