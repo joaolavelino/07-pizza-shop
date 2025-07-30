@@ -7,7 +7,7 @@ export const getMetricsMonthAmountMock = http.get<
   GetMonthAmountResponse
 >('/metrics/month-orders-amount', async () => {
   return HttpResponse.json({
-    amount: 20,
-    diffFromLastMonth: -5,
+    amount: 400,
+    diffFromLastMonth: 25,
   })
 })

@@ -1618,3 +1618,47 @@ test('navigate to new restaurant form', async ({ page }) => {
 
 - No need to create userEvents, they already exist on PlayWright;
 - It's simples to check url and params without any helpers;
+
+## Locators
+
+Locators is a way to search for an item on the DOM, independently of it's visibility
+On the following test, locator is used to track all of the items with the status pending. After filtering using a combobox selector, the locator looked all the table rows and the combobox button text (that rendered the selected option), but it also found the option itself, even if it's not visible.
+
+```ts
+test('filter by status - pending', async ({ page }) => {
+  await page.goto('/orders', { waitUntil: 'networkidle' })
+  await page.getByRole('combobox').click()
+  await page.waitForTimeout(500)
+  await page.getByRole('option', { name: 'Pending' }).click()
+  await page.waitForTimeout(500)
+  await page.getByRole('button', { name: 'Filter results' }).click()
+  await page.waitForTimeout(500)
+  const pendingStatusLocators = page.locator('text=Pending')
+  await expect(pendingStatusLocators).toHaveCount(12) //12 because it counts the 10 items, the combobox button and the option inside of it. Locator finds everything on the DOM, even if it's not visible. So the length is 12. I could iterate on each item and assert it's visibility, one would return an error.
+  statusArray.forEach(async (status) => {
+    if (status !== 'pending')
+      await expect(page.getByText(status)).not.toBeVisible()
+  })
+  await page.waitForTimeout(500)
+})
+```
+
+So 10 rows + button + option = 12 instances, only 11 visible. The assertion was not about the visibility, but the length of the locator array length.
+
+I could use the `.all` selector instead:
+
+```ts
+const pendingInstances = await page.getByText('Pending').all()
+expect(pendingInstances).toHaveLength(12) //passed
+```
+
+Again the locator also found the hidden option. The assertion was again not about visibility
+
+I could be even more specific 👍, and locate the instances by the role `cell`. So it's going to return an array with length 10:
+
+```ts
+const pendingInstances = await page.getByRole('cell', { name: 'Pending' }).all()
+expect(pendingInstances).toHaveLength(10)
+```
+
+_Note: the number 10 is because of the pagination, it's set to 10 items per page_

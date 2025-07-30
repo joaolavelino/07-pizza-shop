@@ -29,7 +29,7 @@ export const getOrderDetailsMock = http.get<
         quantity: 1,
       },
     ],
-    status: 'delivering',
+    status: 'pending',
     totalInCents: 2 * 999 + 899,
   })
 })

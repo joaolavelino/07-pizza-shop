@@ -24,7 +24,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex items-center justify-between p-2">
       <span className="text-muted-foreground text-sm">
-        Total of {entriesNumber} items
+        Total of {entriesNumber} item{entriesNumber > 1 && 's'}
       </span>
       <div className="flex items-center gap-6 lg:gap-8">
         <div className="flex items-center gap-2">

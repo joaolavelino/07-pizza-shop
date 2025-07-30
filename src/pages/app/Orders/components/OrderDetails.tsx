@@ -20,7 +20,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useOrderStatus } from '@/hooks/useOrderStatus'
-import { DialogClose } from '@radix-ui/react-dialog'
+import { DialogClose, DialogDescription } from '@radix-ui/react-dialog'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderCircle, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -76,6 +76,10 @@ export const OrderDetailsModal: React.FC<OrderDetailsProps> = ({
 const OrderDetailsSkeleton = () => {
   return (
     <DialogContent>
+      <DialogTitle className="sr-only">Order Details</DialogTitle>
+      <DialogDescription className="sr-only">
+        Loading Information
+      </DialogDescription>
       <div className="my-4 space-y-4">
         <div className="flex h-6 w-full items-center gap-2">
           <Skeleton className="h-4 w-25" />
@@ -157,14 +161,12 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
       <DialogHeader>
         <DialogTitle>
           <div className="flex items-center gap-4">
-            Order Id#:{' '}
-            {orderDetails ? (
-              <span>{orderDetails.id}</span>
-            ) : (
-              <Skeleton className="h-8 w-48" />
-            )}
+            Order Id#: <span>{orderDetails.id}</span>
           </div>
         </DialogTitle>
+        <DialogDescription className="sr-only">
+          Information about the order
+        </DialogDescription>
       </DialogHeader>
 
       <Table>

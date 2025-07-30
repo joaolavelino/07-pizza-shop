@@ -20,7 +20,7 @@ test('sign-in fail case - wrong credentials', async ({ page }) => {
   await page.getByRole('textbox').fill('notjohndoe@example.com')
   await page.getByRole('button', { name: 'Log-in' }).click()
 
-  const toast = page.getByText(`There was an error by updating. Try again`)
+  const toast = page.getByText('Login failed')
 
   expect(toast).toBeVisible()
 
