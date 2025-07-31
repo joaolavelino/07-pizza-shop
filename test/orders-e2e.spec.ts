@@ -3,9 +3,9 @@ import { expect, test } from '@playwright/test'
 
 test('list orders', async ({ page }) => {
   await page.goto('/orders', { waitUntil: 'networkidle' })
-  expect(page.getByText('Total of 63 items')).toBeVisible() //correct number of orders
+  await expect(page.getByText('Total of 63 items')).toBeVisible() //correct number of orders
   for (let i = 0; i <= 9; i++) {
-    expect(
+    await expect(
       page.getByRole('cell', { name: `mock-order-id-${i + 1}`, exact: true }),
     ).toBeVisible()
   } // expect that the 10 first orders are being displayed
@@ -15,7 +15,7 @@ test('navigate to different pages', async ({ page }) => {
   await page.goto('/orders', { waitUntil: 'networkidle' })
   await page.getByRole('button', { name: 'Next page' }).click()
   for (let i = 0; i <= 9; i++) {
-    expect(
+    await expect(
       page.getByRole('cell', { name: `mock-order-id-${i + 11}`, exact: true }),
     ).toBeVisible()
   } // expect that the orders 11-20 are being displayed
@@ -23,19 +23,19 @@ test('navigate to different pages', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Last page' }).click()
 
-  expect(
+  await expect(
     page.getByRole('cell', { name: `mock-order-id-63`, exact: true }),
   ).toBeVisible()
   await page.getByRole('button', { name: 'Previous page' }).click()
 
   for (let i = 0; i <= 9; i++) {
-    expect(
+    await expect(
       page.getByRole('cell', { name: `mock-order-id-${i + 51}`, exact: true }),
     ).toBeVisible()
   } // expect that the orders 51-60 are being displayed
   await page.getByRole('button', { name: 'First page' }).click()
   for (let i = 0; i <= 9; i++) {
-    expect(
+    await expect(
       page.getByRole('cell', { name: `mock-order-id-${i + 1}`, exact: true }),
     ).toBeVisible()
   } // expect that the orders 1-10 are being displayed
@@ -51,10 +51,10 @@ test('filter by status - pending', async ({ page }) => {
   const pendingInstances = await page
     .getByRole('cell', { name: 'Pending' })
     .all()
-  expect(pendingInstances).toHaveLength(10) //12 because it counts the 10 items, the combobox button and the option inside of it. Locator finds everything on the DOM, even if it's not visible. So the length is 12. I could iterate on each item and assert it's visibility, one would return an error.
+  await expect(pendingInstances).toHaveLength(10) //12 because it counts the 10 items, the combobox button and the option inside of it. Locator finds everything on the DOM, even if it's not visible. So the length is 12. I could iterate on each item and assert it's visibility, one would return an error.
   statusArray.forEach(async (status) => {
     if (status !== 'pending')
-      await expect(page.getByText(status)).not.toBeVisible()
+      await await expect(page.getByText(status)).not.toBeVisible()
   })
   await page.waitForTimeout(500)
 })
@@ -63,32 +63,40 @@ test('filter by order Id and reset', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Order Id' }).fill('mock-order-id-63')
   await page.getByRole('button', { name: 'Filter results' }).click()
   await page.waitForTimeout(500)
-  expect(page.getByText('Total of 1 item')).toBeVisible()
-  expect(page.getByRole('cell', { name: 'mock-order-id-63' })).toBeVisible()
+  await expect(page.getByText('Total of 1 item')).toBeVisible()
+  await expect(
+    page.getByRole('cell', { name: 'mock-order-id-63' }),
+  ).toBeVisible()
 
   //Reset Filter
   await page.getByRole('button', { name: 'Reset filters' }).click()
   await page.waitForTimeout(500)
-  expect(page.getByText('Total of 63 item')).toBeVisible()
-  expect(page.getByRole('cell', { name: 'mock-order-id-10' })).toBeVisible()
-  expect(page.getByRole('cell', { name: 'mock-order-id-63' })).not.toBeVisible()
+  await expect(page.getByText('Total of 63 item')).toBeVisible()
+  await expect(
+    page.getByRole('cell', { name: 'mock-order-id-10' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('cell', { name: 'mock-order-id-63' }),
+  ).not.toBeVisible()
 })
 test('filter by customer and reset', async ({ page }) => {
   await page.goto('/orders', { waitUntil: 'networkidle' })
   await page.getByRole('textbox', { name: 'Order Id' }).fill('63')
   await page.getByRole('button', { name: 'Filter results' }).click()
   await page.waitForTimeout(500)
-  expect(page.getByText('Total of 1 item')).toBeVisible()
-  expect(
+  await expect(page.getByText('Total of 1 item')).toBeVisible()
+  await expect(
     page.getByRole('cell', { name: 'Mock Customer Name - 63' }),
   ).toBeVisible()
 
   //Reset Filter
   await page.getByRole('button', { name: 'Reset filters' }).click()
   await page.waitForTimeout(500)
-  expect(page.getByText('Total of 63 item')).toBeVisible()
-  expect(page.getByRole('cell', { name: 'mock-order-id-10' })).toBeVisible()
-  expect(
+  await expect(page.getByText('Total of 63 item')).toBeVisible()
+  await expect(
+    page.getByRole('cell', { name: 'mock-order-id-10' }),
+  ).toBeVisible()
+  await expect(
     page.getByRole('cell', { name: 'Mock Customer Name - 63' }),
   ).not.toBeVisible()
 })
@@ -110,8 +118,8 @@ test('approve an order using table row', async ({ page }) => {
   console.log(firstRow.evaluate((el) => el.outerHTML))
 
   await firstRow.getByRole('button', { name: 'Approve' }).click()
-  await page.waitForTimeout(500)
-  expect(
+  //   await page.waitForTimeout(500)
+  await expect(
     page.getByText('The order mock-order-id-44 was approved'),
   ).toBeVisible()
 })
@@ -122,10 +130,10 @@ test('display the order details and close the dialog', async ({ page }) => {
     .getByRole('button', { name: 'Order Details' })
     .click()
   await page.waitForTimeout(500)
-  expect(page.getByText('Order Id#: mock-order-id-3')).toBeVisible()
+  await expect(page.getByText('Order Id#: mock-order-id-3')).toBeVisible()
   await page.getByRole('button', { name: 'Close' }).first().click()
   await page.waitForTimeout(500)
-  expect(page.getByText('Order Id#: mock-order-id-3')).not.toBeVisible()
+  await expect(page.getByText('Order Id#: mock-order-id-3')).not.toBeVisible()
 })
 test('trigger next step using order details', async ({ page }) => {
   await page.goto('/orders', { waitUntil: 'networkidle' })
@@ -141,7 +149,7 @@ test('trigger next step using order details', async ({ page }) => {
   await page.waitForTimeout(500)
 
   await page.getByRole('button', { name: 'Approve' }).click()
-  expect(page.getByText(' was approved')).toBeVisible()
+  await expect(page.getByText(' was approved')).toBeVisible()
 })
 
 test('cancel the order from table row', async ({ page }) => {
@@ -151,14 +159,14 @@ test('cancel the order from table row', async ({ page }) => {
     .getByRole('button', { name: 'Cancel' })
     .click()
   await page.waitForTimeout(500)
-  expect(
+  await expect(
     page.getByRole('heading', { name: 'Cancel Order Confirmation' }),
   ).toBeVisible()
   await page.getByRole('button', { name: 'Confirm' }).click()
   await page.waitForTimeout(500)
-  expect(page.getByText('The order mock-order-id-3 was cancelled'))
+  await expect(page.getByText('The order mock-order-id-3 was cancelled'))
   await page.waitForTimeout(500)
-  expect(
+  await expect(
     page.getByRole('heading', { name: 'Cancel Order Confirmation' }),
   ).not.toBeVisible()
 })
@@ -169,19 +177,19 @@ test('cancel the order from order details', async ({ page }) => {
     .getByRole('button', { name: 'Order Details' })
     .click()
   await page.waitForTimeout(500)
-  expect(page.getByText('Order Id#: mock-order-id-3')).toBeVisible()
+  await expect(page.getByText('Order Id#: mock-order-id-3')).toBeVisible()
   await page.getByRole('button', { name: 'Cancel' }).first().click()
   await page.waitForTimeout(500)
-  expect(
+  await expect(
     page.getByRole('heading', { name: 'Cancel Order Confirmation' }),
   ).toBeVisible()
-  expect(page.getByText('Order Id#: mock-order-id-3')).not.toBeVisible()
+  await expect(page.getByText('Order Id#: mock-order-id-3')).not.toBeVisible()
   await page.getByRole('button', { name: 'Confirm' }).click()
   await page.waitForTimeout(500)
-  expect(page.getByText('The order mock-order-id-3 was cancelled'))
+  await expect(page.getByText('The order mock-order-id-3 was cancelled'))
   await page.waitForTimeout(500)
-  expect(
+  await expect(
     page.getByRole('heading', { name: 'Cancel Order Confirmation' }),
   ).not.toBeVisible()
-  expect(page.getByText('Order Id#: mock-order-id-3')).toBeVisible()
+  await expect(page.getByText('Order Id#: mock-order-id-3')).toBeVisible()
 })

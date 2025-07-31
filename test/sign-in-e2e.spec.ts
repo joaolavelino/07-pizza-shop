@@ -10,7 +10,7 @@ test('sign-in success case', async ({ page }) => {
 
   const toast = page.getByText('Login success')
 
-  expect(toast).toBeVisible()
+  await expect(toast).toBeVisible()
 
   await page.waitForTimeout(2000) // just to create a posterior marker in order to Playwright to render the last expected page - It's a bug from playwright that cut the final snapshot
 })
@@ -22,7 +22,7 @@ test('sign-in fail case - wrong credentials', async ({ page }) => {
 
   const toast = page.getByText('Login failed')
 
-  expect(toast).toBeVisible()
+  await expect(toast).toBeVisible()
 
   await page.waitForTimeout(2000)
 })

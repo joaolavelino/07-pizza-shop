@@ -13,7 +13,7 @@ test('sign-up success case', async ({ page }) => {
 
   const toast = page.getByText('Register success')
 
-  expect(toast).toBeVisible()
+  await expect(toast).toBeVisible()
 })
 test('sign-up failure case', async ({ page }) => {
   await page.goto('/sign-up', { waitUntil: 'networkidle' })
@@ -28,7 +28,7 @@ test('sign-up failure case', async ({ page }) => {
 
   const toast = page.getByText('Register failed')
 
-  expect(toast).toBeVisible()
+  await expect(toast).toBeVisible()
 })
 
 test('navigate to login form', async ({ page }) => {
@@ -36,5 +36,5 @@ test('navigate to login form', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Login' }).click()
 
-  expect(page.url()).toContain('sign-in')
+  await expect(page.url()).toContain('sign-in')
 })
