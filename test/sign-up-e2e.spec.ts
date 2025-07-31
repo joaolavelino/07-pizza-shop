@@ -36,5 +36,5 @@ test('navigate to login form', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Login' }).click()
 
-  await expect(page.url()).toContain('sign-in')
+  expect(page.url()).toContain('sign-in')
 })

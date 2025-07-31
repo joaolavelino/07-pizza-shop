@@ -17,7 +17,7 @@ test('update restaurant info success case - dialog close', async ({ page }) => {
   const toast = page.getByText(
     'Your new restaurant information is already visible for your customers',
   )
-  expect(toast).toBeVisible()
+  await expect(toast).toBeVisible()
 
   await page.waitForTimeout(500) // automatically close the dialog
   expect(page.getByRole('heading', { name: 'Shop Profile' })).not.toBeVisible()
@@ -41,7 +41,7 @@ test('update restaurant info failure case - automatic sign-out', async ({
   await page.waitForLoadState('networkidle')
 
   const toast = page.getByText('Update failed')
-  expect(toast).toBeVisible()
+  await expect(toast).toBeVisible()
 
   expect(page.url()).toContain('sign-in')
   //check if the user is redirected to the sign-in page

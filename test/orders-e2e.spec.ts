@@ -164,7 +164,9 @@ test('cancel the order from table row', async ({ page }) => {
   ).toBeVisible()
   await page.getByRole('button', { name: 'Confirm' }).click()
   await page.waitForTimeout(500)
-  await expect(page.getByText('The order mock-order-id-3 was cancelled'))
+  await expect(
+    page.getByText('The order mock-order-id-3 was cancelled'),
+  ).toBeVisible()
   await page.waitForTimeout(500)
   await expect(
     page.getByRole('heading', { name: 'Cancel Order Confirmation' }),
@@ -179,15 +181,17 @@ test('cancel the order from order details', async ({ page }) => {
   await page.waitForTimeout(500)
   await expect(page.getByText('Order Id#: mock-order-id-3')).toBeVisible()
   await page.getByRole('button', { name: 'Cancel' }).first().click()
-  await page.waitForTimeout(500)
+  //   await page.waitForTimeout(500)
   await expect(
     page.getByRole('heading', { name: 'Cancel Order Confirmation' }),
   ).toBeVisible()
   await expect(page.getByText('Order Id#: mock-order-id-3')).not.toBeVisible()
   await page.getByRole('button', { name: 'Confirm' }).click()
-  await page.waitForTimeout(500)
-  await expect(page.getByText('The order mock-order-id-3 was cancelled'))
-  await page.waitForTimeout(500)
+  //   await page.waitForTimeout(500)
+  await expect(
+    page.getByText('The order mock-order-id-3 was cancelled'),
+  ).toBeVisible()
+  //   await page.waitForTimeout(500)
   await expect(
     page.getByRole('heading', { name: 'Cancel Order Confirmation' }),
   ).not.toBeVisible()
